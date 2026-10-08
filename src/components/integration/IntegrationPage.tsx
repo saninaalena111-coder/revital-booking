@@ -13,7 +13,7 @@ import { EventsDemo } from "./EventsDemo";
 import { Prescriptions, StageBadge } from "./Prescriptions";
 
 const OURS = [
-  "контакт пациента", "связь с ID пациента в МИС", "ID записи", "источник обращения", "статус записи", "время",
+  "контакт пациента", "связь с номером пациента в МИС", "номер записи", "источник обращения", "статус записи", "время",
   "врача", "канал уведомления", "историю уведомлений", "маркетинговые данные", "пользовательские настройки",
 ];
 const MIS = [
@@ -42,9 +42,9 @@ export function IntegrationContent() {
       {/* API */}
       <section id="api" className="mt-28 scroll-mt-24">
         <SectionTitle
-          eyebrow="Зачем нужен API «Санаториума»"
+          eyebrow="Зачем нужен обмен данными с «Санаториумом»"
           title="Расписание живёт в МИС — мы должны видеть его в реальном времени"
-          lead="Без API система не знает, кто из врачей работает, какие кабинеты заняты и какие записи уже сделаны по телефону. Через API она получает эти данные и передаёт обратно выбранное пациентом время."
+          lead="Без подключения к «Санаториуму» система не знает, кто из врачей работает, какие кабинеты заняты и какие записи уже сделаны по телефону. Через защищённое подключение она получает эти данные и сразу передаёт обратно время, которое выбрал пациент."
         />
         <div className="mt-12 grid gap-5 lg:grid-cols-2">
           <ContractCard title="Что получаем из МИС" sub="для первой версии" icon={<ArrowDownLeft size={18} />} items={data?.receive} />
@@ -57,7 +57,7 @@ export function IntegrationContent() {
         <SectionTitle
           eyebrow="Зачем нужны события об изменении записи"
           title="Если запись изменили в «Санаториуме», пациент должен узнать об этом"
-          lead="Например, пациент записан на 11:00, а администратор перенёс его в МИС на 12:00. Если ничего не сделать, в личном кабинете останется старое время и пациент придёт не вовремя. Нажмите кнопку и сравните два варианта."
+          lead="Например, пациент записан на 11:00, а администратор перенёс его в «Санаториуме» на 12:00. Если наша система об этом не узнает, в личном кабинете останется старое время и пациент придёт не вовремя. Нажмите кнопку и сравните два варианта."
         />
         <div className="mt-12">
           <EventsDemo />
@@ -76,7 +76,7 @@ export function IntegrationContent() {
             <div className="flex items-center gap-3">
               <LogoMark light className="h-9 w-9" />
               <div>
-                <div className="font-display text-3xl">Revital Medical Booking</div>
+                <div className="font-display text-3xl">Онлайн-запись Ревиталь</div>
                 <div className="text-sm text-sage">клиентский путь · хранит</div>
               </div>
             </div>
@@ -115,7 +115,7 @@ export function IntegrationContent() {
           <SectionTitle
             eyebrow="Почему не заменяем «Санаториум»"
             title="МИС отвечает за лечение. Новая система — за путь пациента"
-            lead="Revital Medical Booking не пытается заменить медицинскую информационную систему. Врачи продолжают работать в привычной программе, а пациент получает современный сервис записи."
+            lead="«Онлайн-запись Ревиталь» не пытается заменить медицинскую информационную систему. Врачи продолжают работать в привычной программе, а пациент получает современный сервис записи."
           />
           <ol className="relative space-y-3 before:absolute before:bottom-6 before:left-[27px] before:top-6 before:w-px before:bg-line">
             {JOURNEY.map((j, i) => (
@@ -167,7 +167,7 @@ export function IntegrationContent() {
       <section className="mt-20 flex flex-col items-start justify-between gap-6 rounded-[32px] border border-line p-8 sm:flex-row sm:items-center sm:p-10">
         <div>
           <div className="font-display text-3xl text-forest-deep">Что потребуется от «Санаториума»</div>
-          <p className="mt-2 text-muted">Короткий список для обсуждения с разработчиком МИС</p>
+          <p className="mt-2 text-muted">Короткий список для обсуждения с разработчиком «Санаториума». Технические подробности — в дашборде, в разделе «Для разработчиков».</p>
         </div>
         <LinkButton href="/requirements" size="lg">
           Открыть список <ArrowRight size={18} />
@@ -197,7 +197,6 @@ function ContractCard({ title, sub, icon, items, dark }: { title: string; sub: s
               </div>
               <div className={`text-[13px] ${dark ? "text-sage/80" : "text-muted"}`}>{it.hint}</div>
             </div>
-            <code className={`hidden shrink-0 rounded-lg px-2 py-1 font-mono text-[11px] sm:block ${dark ? "bg-milk/10 text-sage" : "bg-cream text-muted"}`}>{it.tech}</code>
           </li>
         ))}
       </ul>

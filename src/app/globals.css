@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 /*
- * Revital Park — фирменная палитра.
+ * Ревиталь Парк — фирменная палитра.
  * Основа: молочный/бежевый фон, тёмно-зелёные акценты (из бренд-teal #497673),
  * светлый шалфей #CBD6C3 и золото #D0AB67.
  */
-@theme {
+@theme static {
   --color-milk: #faf8f3;
   --color-cream: #f4efe6;
   --color-sand: #ebe3d5;
@@ -26,8 +26,7 @@
   --color-ok: #4f7f5b;
   --color-ok-soft: #e1ecdf;
 
-  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-cormorant), ui-serif, Georgia, serif;
+  --font-sans: var(--font-myriad), "Myriad Pro", ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --shadow-soft: 0 1px 2px rgb(31 46 44 / 0.04), 0 8px 24px -12px rgb(31 46 44 / 0.12);
@@ -41,7 +40,7 @@ html {
 body {
   background: var(--color-milk);
   color: var(--color-ink);
-  font-family: var(--font-sans);
+  font-family: var(--font-myriad), "Myriad Pro", ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -50,9 +49,11 @@ body {
   color: var(--color-forest-deep);
 }
 
+/* Крупные заголовки — тот же фирменный Myriad Pro, светлое начертание */
 .font-display {
-  font-family: var(--font-serif);
-  letter-spacing: -0.01em;
+  font-family: var(--font-myriad), "Myriad Pro", ui-sans-serif, system-ui, sans-serif;
+  font-weight: 300;
+  letter-spacing: -0.015em;
 }
 
 /* Мягкое стекло для плавающих элементов */

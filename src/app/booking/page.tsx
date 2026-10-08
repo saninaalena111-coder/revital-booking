@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import type { Metadata } from "next";
 import { BookingFlow } from "@/components/booking/BookingFlow";
 
-export const metadata: Metadata = { title: "Запись к врачу — Revital Park" };
+export const metadata: Metadata = { title: "Запись к врачу — Ревиталь Парк" };
 
 export default function BookingPage() {
   return (

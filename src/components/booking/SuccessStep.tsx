@@ -56,7 +56,7 @@ export function SuccessStep({ appointment: a, onRestart }: { appointment: Appoin
               <div className="font-display mt-1 text-4xl text-forest-deep">{fmtTime(a.start)}</div>
             </div>
           </div>
-          <div className="mt-6 text-[15px] text-ink/80">Revital Park · медицинский центр</div>
+          <div className="mt-6 text-[15px] text-ink/80">Ревиталь Парк · медицинский центр</div>
         </div>
         {data?.room && (
           <div className="flex items-center gap-3 border-t border-line bg-cream/60 px-7 py-4 text-sm text-ink/80 sm:px-8">
@@ -68,7 +68,7 @@ export function SuccessStep({ appointment: a, onRestart }: { appointment: Appoin
       </motion.div>
 
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mt-8 flex flex-wrap justify-center gap-3">
-        <Button variant="secondary" onClick={() => downloadIcs(a, `Приём: ${doctorName}`, "Revital Park")}>
+        <Button variant="secondary" onClick={() => downloadIcs(a, `Приём: ${doctorName}`, "Ревиталь Парк")}>
           <CalendarPlus size={17} /> Добавить в календарь
         </Button>
         <LinkButton href="/cabinet">Мои записи</LinkButton>
@@ -77,12 +77,12 @@ export function SuccessStep({ appointment: a, onRestart }: { appointment: Appoin
         </LinkButton>
       </motion.div>
       <p className="mt-6 flex items-center justify-center gap-2 text-sm text-muted">
-        <MessageSquare size={15} className="text-teal" /> Мы напомним о приёме по SMS.
+        <MessageSquare size={15} className="text-teal" /> Мы напомним о приёме по СМС.
       </p>
 
       {data?.sms && data.sms.length > 0 && (
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.7 }} className="mx-auto mt-14 max-w-xl text-left">
-          <div className="mb-4 text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-teal">Какие SMS придут · демо</div>
+          <div className="mb-4 text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-teal">Какие СМС придут · демо</div>
           <div className="space-y-3">
             {data.sms.map((m) => (
               <div key={m.id} className="flex items-start gap-3">
@@ -93,7 +93,7 @@ export function SuccessStep({ appointment: a, onRestart }: { appointment: Appoin
               </div>
             ))}
           </div>
-          <p className="mt-4 text-center text-xs text-muted">Реальная отправка SMS в прототипе не подключена.</p>
+          <p className="mt-4 text-center text-xs text-muted">Реальная отправка СМС в прототипе не подключена.</p>
         </motion.div>
       )}
 

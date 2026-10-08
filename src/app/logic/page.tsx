@@ -4,7 +4,7 @@ import { PageIntro } from "@/components/ui/HowTabs";
 import { LogicExplorer } from "@/components/logic/LogicExplorer";
 import { HiddenRoomPrinciple, RoomAccessDemo } from "@/components/logic/RoomRules";
 
-export const metadata: Metadata = { title: "Как система принимает решение — Revital Medical Booking" };
+export const metadata: Metadata = { title: "Как система принимает решение — Онлайн-запись Ревиталь" };
 
 export default function LogicPage() {
   return (

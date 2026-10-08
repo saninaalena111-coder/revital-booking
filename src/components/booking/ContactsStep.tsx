@@ -75,7 +75,7 @@ export function ContactsStep({ slot, serviceId, patient, attribution, onDone }: 
             <div className="mb-2 text-[13px] font-medium text-ink/70">Напоминания</div>
             <div className="flex flex-wrap gap-2">
               <span className="inline-flex items-center gap-2 rounded-full border border-forest bg-forest/[0.05] px-4 py-2 text-sm text-forest">
-                <MessageSquare size={14} /> SMS <Check size={14} />
+                <MessageSquare size={14} /> СМС <Check size={14} />
               </span>
               <span className="inline-flex items-center gap-2 rounded-full border border-line px-4 py-2 text-sm text-muted">
                 <Send size={14} /> Telegram · скоро
@@ -117,7 +117,7 @@ export function ContactsStep({ slot, serviceId, patient, attribution, onDone }: 
             <Row label="Услуга" value={data.service?.title} />
             <Row label="Дата" value={`${fmtDay(slot.date)}, ${fmtWeekdayLong(slot.date)}`} />
             <Row label="Время" value={`${fmtTime(slot.start)}–${fmtTime(slot.end)}`} />
-            <Row label="Где" value="Revital Park, медицинский центр" />
+            <Row label="Где" value="Ревиталь Парк, медицинский центр" />
           </dl>
           <div className="mt-6 flex items-start gap-3 rounded-2xl bg-milk p-4 text-[13px] leading-relaxed text-muted">
             <DoorOpen size={16} className="mt-0.5 shrink-0 text-teal" />

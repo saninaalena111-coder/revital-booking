@@ -16,7 +16,7 @@ type Mode = "webhook" | "polling";
  */
 export function EventsDemo() {
   const [mode, setMode] = useState<Mode>("webhook");
-  const [stage, setStage] = useState(0); // 0 — исходно, 1 — изменено в МИС, 2 — событие/ожидание, 3 — запись обновлена, 4 — ЛК, 5 — SMS
+  const [stage, setStage] = useState(0); // 0 — исходно, 1 — изменено в МИС, 2 — событие/ожидание, 3 — запись обновлена, 4 — ЛК, 5 — СМС
   const [countdown, setCountdown] = useState(0);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
 
@@ -67,8 +67,8 @@ export function EventsDemo() {
             reset();
           }}
           options={[
-            { value: "webhook", label: "Есть webhook" },
-            { value: "polling", label: "Нет webhook — проверка по расписанию" },
+            { value: "webhook", label: "«Санаториум» сообщает сам" },
+            { value: "polling", label: "Проверяем сами каждые 5 минут" },
           ]}
         />
         <div className="flex gap-2">
@@ -99,11 +99,11 @@ export function EventsDemo() {
         <Connector active={stage === 2} mode={mode} countdown={countdown} />
 
         {/* наша система */}
-        <Panel icon={<LogoMark className="h-[18px] w-[18px]" />} title="Revital Medical Booking" sub="наша система">
+        <Panel icon={<LogoMark className="h-[18px] w-[18px]" />} title="Онлайн-запись Ревиталь" sub="наша система">
           <div className="space-y-2">
             <Step n={1} done={stage >= 3} text={`Обновила запись: ${ourTime}`} />
             <Step n={2} done={stage >= 4} text="Изменила время в личном кабинете" />
-            <Step n={3} done={stage >= 5} text="Отправила SMS пациенту" />
+            <Step n={3} done={stage >= 5} text="Отправила СМС пациенту" />
           </div>
           {mode === "polling" && stage === 2 && (
             <div className="mt-3 flex items-center gap-2 rounded-xl bg-gold-soft/60 px-3 py-2 text-[12.5px] text-[#7a5a1c]">
@@ -117,7 +117,7 @@ export function EventsDemo() {
         </div>
 
         {/* пациент */}
-        <Panel icon={<Smartphone size={18} className="text-teal" />} title="Телефон пациента" sub="личный кабинет и SMS">
+        <Panel icon={<Smartphone size={18} className="text-teal" />} title="Телефон пациента" sub="личный кабинет и СМС">
           <div className="rounded-2xl bg-cream/70 p-4">
             <div className="text-xs text-muted">Мои записи · 12 октября</div>
             <div className="mt-2 flex items-center gap-3">
@@ -129,9 +129,9 @@ export function EventsDemo() {
             {stage >= 5 && (
               <motion.div initial={{ opacity: 0, y: 8, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="mt-3 rounded-2xl rounded-tl-md bg-sage-soft p-3 text-[13px] leading-relaxed text-ink">
                 <div className="mb-1 flex items-center gap-1.5 text-[11px] text-muted">
-                  <MessageSquare size={11} /> SMS · Revital Park
+                  <MessageSquare size={11} /> СМС · Ревиталь Парк
                 </div>
-                Revital Park: время вашего приёма изменено. Новое время — 12:00.
+                Ревиталь Парк: время вашего приёма изменено. Новое время — 12:00.
               </motion.div>
             )}
           </AnimatePresence>
@@ -142,11 +142,11 @@ export function EventsDemo() {
         <motion.p key={mode} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="mt-6 rounded-2xl bg-cream/60 p-4 text-[14px] leading-relaxed text-ink/75">
           {mode === "webhook" ? (
             <>
-              <b className="text-forest-deep">С webhook</b> «Санаториум» сам сообщает нашей системе об изменении — пациент узнаёт о переносе через несколько секунд.
+              <b className="text-forest-deep">Лучший вариант:</b> «Санаториум» сам сразу сообщает нашей системе об изменении — пациент узнаёт о переносе через несколько секунд.
             </>
           ) : (
             <>
-              <b className="text-forest-deep">Без webhook</b> наша система регулярно (например, раз в 5 минут) спрашивает у МИС через API, что изменилось. Работает надёжно, но с задержкой. В демо 5 минут ускорены до 5 секунд.
+              <b className="text-forest-deep">Запасной вариант:</b> если «Санаториум» не умеет сообщать сам, наша система каждые 5 минут спрашивает у него, что изменилось. Работает надёжно, но с задержкой. В демо 5 минут ускорены до 5 секунд.
             </>
           )}
         </motion.p>
@@ -220,7 +220,7 @@ function Connector({ active, mode, countdown }: { active: boolean; mode: Mode; c
             className="absolute rounded-full bg-gold px-2 py-1 text-[10px] font-semibold text-forest-deep shadow"
           >
             <span className="flex items-center gap-1">
-              <Webhook size={11} /> событие
+              <Webhook size={11} /> сообщение
             </span>
           </motion.span>
         )}

@@ -1,8 +1,8 @@
 /**
- * notificationsService — SMS-напоминания и настройки уведомлений.
+ * notificationsService — СМС-напоминания и настройки уведомлений.
  *
  * ДЕМО: сообщения только формируются и показываются в интерфейсе.
- * РЕАЛЬНАЯ ОТПРАВКА: подключить SMS-шлюз (например, через серверный
+ * РЕАЛЬНАЯ ОТПРАВКА: подключить СМС-шлюз (например, через серверный
  * эндпоинт /api/notifications) и планировщик задач для напоминаний
  * за сутки и за 2 часа.
  */
@@ -33,12 +33,12 @@ const short = (date: string) => `${dayNum(date)} ${fmtDay(date).split(" ")[1].sl
 
 export const smsTemplates = {
   created: (a: Appointment) =>
-    `Revital Park: Вы записаны на ${visitWord(a)} к ${docDative(a)} ${fmtDay(a.date)} в ${fmtTime(a.start)}.`,
-  dayBefore: (a: Appointment) => `Revital Park: напоминаем о приёме завтра в ${fmtTime(a.start)}.`,
+    `Ревиталь Парк: Вы записаны на ${visitWord(a)} к ${docDative(a)} ${fmtDay(a.date)} в ${fmtTime(a.start)}.`,
+  dayBefore: (a: Appointment) => `Ревиталь Парк: напоминаем о приёме завтра в ${fmtTime(a.start)}.`,
   twoHours: (a: Appointment) =>
-    `Revital Park: ждём вас сегодня в ${fmtTime(a.start)}. Если планы изменились, запись можно перенести в личном кабинете.`,
-  changed: (a: Appointment) => `Revital Park: время вашего приёма изменено. Новое время — ${fmtDay(a.date)}, ${fmtTime(a.start)}.`,
-  cancelled: (a: Appointment) => `Revital Park: запись на ${fmtDay(a.date)}, ${fmtTime(a.start)} отменена.`,
+    `Ревиталь Парк: ждём вас сегодня в ${fmtTime(a.start)}. Если планы изменились, запись можно перенести в личном кабинете.`,
+  changed: (a: Appointment) => `Ревиталь Парк: время вашего приёма изменено. Новое время — ${fmtDay(a.date)}, ${fmtTime(a.start)}.`,
+  cancelled: (a: Appointment) => `Ревиталь Парк: запись на ${fmtDay(a.date)}, ${fmtTime(a.start)} отменена.`,
 };
 
 function plan(a: Appointment): SmsMessage[] {
@@ -67,7 +67,7 @@ export const notificationsService = {
     await latency();
     db.setSettings({ smsEnabled: on });
   },
-  /** Предпросмотр цепочки SMS без сохранения */
+  /** Предпросмотр цепочки СМС без сохранения */
   preview: (a: Appointment) => plan(a),
   onCreated(a: Appointment) {
     db.addSms(plan(a));

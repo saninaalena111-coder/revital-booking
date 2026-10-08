@@ -16,15 +16,15 @@ import { StepTitle, type Path } from "./BookingFlow";
 /* ---------------- ШАГ 1 ---------------- */
 
 const STATUS_CARDS: { path: Path; icon: typeof Hotel; title: string; text: string; cta: string }[] = [
-  { path: "guest", icon: Hotel, title: "Я сейчас проживаю в Revital Park", text: "Вы уже являетесь гостем санатория.", cta: "Продолжить" },
-  { path: "future", icon: Plane, title: "Я планирую приехать в Revital Park", text: "Вы планируете проживание и хотите заранее организовать лечение.", cta: "Продолжить" },
+  { path: "guest", icon: Hotel, title: "Я сейчас проживаю в Ревиталь Парк", text: "Вы уже являетесь гостем санатория.", cta: "Продолжить" },
+  { path: "future", icon: Plane, title: "Я планирую приехать в Ревиталь Парк", text: "Вы планируете проживание и хотите заранее организовать лечение.", cta: "Продолжить" },
   { path: "outpatient", icon: Footprints, title: "Хочу записаться без проживания", text: "Амбулаторный приём врача или отдельная медицинская услуга.", cta: "Выбрать специалиста" },
 ];
 
 export function StatusStep({ onPick }: { onPick: (p: Path) => void }) {
   return (
     <>
-      <StepTitle eyebrow="Шаг 1" title="Подскажите, пожалуйста, как вы планируете посетить Revital Park?" />
+      <StepTitle eyebrow="Шаг 1" title="Подскажите, пожалуйста, как вы планируете посетить Ревиталь Парк?" />
       <div className="grid gap-4 md:grid-cols-3">
         {STATUS_CARDS.map((c, i) => (
           <motion.button
@@ -190,7 +190,7 @@ export function FutureIntroStep({ onPlan, onOutpatient }: { onPlan: () => void; 
         <StepTitle
           eyebrow="Будущий гость"
           title="Планируете лечение во время проживания?"
-          lead="Лечение в Revital Park начинается с консультации терапевта. Её можно забронировать заранее — на первые дни после заезда. Процедуры врач назначит на приёме."
+          lead="Лечение в Ревиталь Парк начинается с консультации терапевта. Её можно забронировать заранее — на первые дни после заезда. Процедуры врач назначит на приёме."
         />
         <div className="flex flex-wrap gap-3">
           <Button size="lg" onClick={onPlan}>

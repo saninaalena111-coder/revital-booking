@@ -21,29 +21,29 @@ export interface ContractItem {
   stage: 1 | 2;
 }
 
-/** Что Revital Medical Booking получает из МИС */
+/** Что Онлайн-запись Ревиталь получает из МИС */
 const RECEIVE: ContractItem[] = [
-  { title: "Список врачей и их ID", hint: "Кого показывать пациенту", tech: "GET /doctors", stage: 1 },
+  { title: "Список врачей и их номера", hint: "Кого показывать пациенту", tech: "GET /doctors", stage: 1 },
   { title: "Специальности", hint: "Для каталога направлений", tech: "GET /specialties", stage: 1 },
   { title: "Рабочие смены", hint: "Когда врач принимает", tech: "GET /doctors/{id}/shifts", stage: 1 },
   { title: "Услуги и их продолжительность", hint: "Сколько времени занимает приём", tech: "GET /services", stage: 1 },
   { title: "Кабинеты и привязка врачей", hint: "Где врач может работать", tech: "GET /rooms", stage: 1 },
   { title: "Существующие записи", hint: "Что уже занято", tech: "GET /appointments?date=", stage: 1 },
-  { title: "Свободные интервалы", hint: "Если МИС умеет считать сама", tech: "GET /slots", stage: 1 },
-  { title: "Данные для идентификации гостя", hint: "Телефон + фамилия → бронирование", tech: "POST /patients/lookup", stage: 1 },
-  { title: "ID пациента", hint: "Связь нашей записи с картой в МИС", tech: "patient.id", stage: 1 },
-  { title: "ID созданной записи", hint: "Чтобы потом переносить и отменять", tech: "appointment.id", stage: 1 },
+  { title: "Свободное время", hint: "Если «Санаториум» умеет считать его сам", tech: "GET /slots", stage: 1 },
+  { title: "Данные для поиска гостя", hint: "Телефон + фамилия → бронирование", tech: "POST /patients/lookup", stage: 1 },
+  { title: "Номер пациента в МИС", hint: "Связывает нашу запись с карточкой пациента в МИС", tech: "patient.id", stage: 1 },
+  { title: "Номер созданной записи", hint: "Чтобы потом переносить и отменять", tech: "appointment.id", stage: 1 },
   { title: "Актуальный статус записи", hint: "Подтверждена, перенесена, отменена", tech: "GET /appointments/{id}", stage: 1 },
   { title: "Назначения врача", hint: "Какие процедуры разрешены пациенту", tech: "GET /patients/{id}/prescriptions", stage: 2 },
 ];
 
-/** Что Revital Medical Booking передаёт в МИС */
+/** Что Онлайн-запись Ревиталь передаёт в МИС */
 const SEND: ContractItem[] = [
-  { title: "Пациент", hint: "Новый или найденный по ID", tech: "patient", stage: 1 },
+  { title: "Пациент", hint: "Новый или найденный по номеру в МИС", tech: "patient", stage: 1 },
   { title: "Врач", hint: "Выбранный специалист", tech: "doctorId", stage: 1 },
   { title: "Услуга", hint: "Что будет на приёме", tech: "serviceId", stage: 1 },
   { title: "Дата и время", hint: "Выбранный пациентом слот", tech: "date, start", stage: 1 },
-  { title: "Кабинет — при необходимости", hint: "Если МИС не назначает сама", tech: "roomId", stage: 1 },
+  { title: "Кабинет — при необходимости", hint: "Если «Санаториум» не назначает его сам", tech: "roomId", stage: 1 },
   { title: "Создание записи", hint: "Слот сразу занят и в МИС", tech: "POST /appointments", stage: 1 },
   { title: "Перенос", hint: "Из личного кабинета пациента", tech: "PATCH /appointments/{id}", stage: 1 },
   { title: "Отмена", hint: "Освобождает врача и кабинет", tech: "DELETE /appointments/{id}", stage: 1 },

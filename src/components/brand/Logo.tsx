@@ -1,25 +1,32 @@
+import Image from "next/image";
 import Link from "next/link";
+import logoTeal from "@/assets/brand/horiz_teal.png";
+import markTeal from "@/assets/brand/krug.png";
+import markWhite from "@/assets/brand/krug_white.png";
 
+/** Круглый знак «В» из фирменного стиля */
 export function LogoMark({ className = "h-9 w-9", light = false }: { className?: string; light?: boolean }) {
-  const c = light ? "#faf8f3" : "#2f5451";
-  return (
-    <svg viewBox="0 0 40 40" className={className} aria-hidden>
-      <circle cx="20" cy="20" r="19" fill="none" stroke={c} strokeWidth="1" />
-      <path d="M20 31c0-8 0-12 0-17" stroke={c} strokeWidth="1.2" strokeLinecap="round" />
-      <path d="M20 22c-6-1-9-5-9-10 5 0 9 3 9 10Z" fill="none" stroke={c} strokeWidth="1.2" />
-      <path d="M20 18c5-.5 8-4 8-8.5-4.5 0-8 3-8 8.5Z" fill="#d0ab67" fillOpacity=".9" />
-    </svg>
-  );
+  return <Image src={light ? markWhite : markTeal} alt="" className={`${className} object-contain`} priority />;
 }
 
-export function Logo({ light = false, subtitle = "Medical Booking" }: { light?: boolean; subtitle?: string }) {
+/** Логотип «Ревиталь» + подпись раздела */
+export function Logo({ light = false, subtitle = "Онлайн-запись" }: { light?: boolean; subtitle?: string }) {
+  if (light) {
+    // Тёмная боковая панель: белый знак, подпись под названием
+    return (
+      <Link href="/" className="flex items-center gap-3" aria-label="Ревиталь Парк — на главную">
+        <LogoMark light className="h-11 w-11 shrink-0" />
+        <span className="leading-none">
+          <span className="block text-[22px] tracking-[0.06em] text-milk">РЕВИТАЛЬ</span>
+          <span className="mt-1.5 block text-[10px] font-semibold uppercase tracking-[0.2em] text-sage">{subtitle}</span>
+        </span>
+      </Link>
+    );
+  }
   return (
-    <Link href="/" className="flex items-center gap-3" aria-label="Revital Park — на главную">
-      <LogoMark light={light} />
-      <span className="leading-none">
-        <span className={`font-display block text-[22px] tracking-tight ${light ? "text-milk" : "text-forest-deep"}`}>Revital Park</span>
-        <span className={`mt-1 block text-[9.5px] font-semibold uppercase tracking-[0.28em] ${light ? "text-sage" : "text-teal"}`}>{subtitle}</span>
-      </span>
+    <Link href="/" className="flex items-center gap-3" aria-label="Ревиталь Парк — на главную">
+      <Image src={logoTeal} alt="Ревиталь" className="h-9 w-auto sm:h-10" priority />
+      <span className="hidden border-l border-line pl-3 text-[11px] font-semibold uppercase leading-tight tracking-[0.18em] text-teal sm:block">{subtitle}</span>
     </Link>
   );
 }

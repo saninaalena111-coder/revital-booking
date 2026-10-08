@@ -151,7 +151,7 @@ function ExplainPanel({
             {room.access === "personal"
               ? "Персональный кабинет: назначается только закреплённому врачу."
               : `Может использоваться: ${who.map((d) => `${d.lastName} ${d.firstName[0]}.`).join(", ")}.`}{" "}
-            Свободный кабинет сам по себе не даёт слот — нужен ещё свободный врач.
+            Свободный кабинет сам по себе не даёт время для записи — нужен ещё свободный врач.
           </p>
         </div>
         <button onClick={onClose} aria-label="Закрыть" className="text-muted hover:text-forest"><X size={16} /></button>
@@ -198,6 +198,9 @@ function Mini({ ok, title, text }: { ok: boolean; title: string; text: string })
   );
 }
 
+/** Демо: показываем номер записи в МИС цифрами */
+const misNumber = (id: string) => String(100000 + ([...id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 900000, 7)));
+
 function AppointmentDetails({ a, doctors, services }: { a: Appointment; doctors: { id: string; lastName: string; firstName: string; patronymic: string }[]; services: { id: string; title: string }[] }) {
   const d = doctors.find((x) => x.id === a.doctorId)!;
   const rows: [string, string][] = [
@@ -207,7 +210,7 @@ function AppointmentDetails({ a, doctors, services }: { a: Appointment; doctors:
     ["Дата и время", `${fmtDay(a.date)}, ${fmtRange(a.start, a.end)}`],
     ["Кабинет", a.roomId ? `№${a.roomId} (назначен системой)` : "—"],
     ["Создана", a.createdVia === "online" ? "онлайн-запись" : a.createdVia === "mis" ? "в МИС администратором" : "по телефону"],
-    ["ID записи в МИС", a.misId ?? "—"],
+    ["Номер записи в МИС", a.misId ? misNumber(a.misId) : "—"],
   ];
   return (
     <div>

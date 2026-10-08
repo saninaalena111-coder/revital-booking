@@ -2,11 +2,11 @@
  * In-memory «база» демо-режима.
  *
  * Хранит то, что пользователь сделал в прототипе (созданные, перенесённые
- * и отменённые записи, SMS, настройки) и сохраняет это в localStorage,
+ * и отменённые записи, СМС, настройки) и сохраняет это в localStorage,
  * чтобы личный кабинет и админ-панель видели результат записи.
  *
  * В рабочей версии этот модуль исчезает: записи живут в МИС «Санаториум»
- * и в базе Revital Medical Booking на сервере.
+ * и в базе Онлайн-запись Ревиталь на сервере.
  */
 import type { Appointment, ISODate, SmsMessage } from "@/lib/types";
 import { ANNA_APPOINTMENT_ID, HANDCRAFTED, generatedFor } from "./appointments";
@@ -18,15 +18,15 @@ interface DemoState {
   settings: { smsEnabled: boolean };
 }
 
-const KEY = "revital-booking-demo-v1";
+const KEY = "revital-booking-demo-v2";
 
 const SEED_SMS: SmsMessage[] = [
   { id: "sms-1", appointmentId: ANNA_APPOINTMENT_ID, kind: "created", status: "sent", sendAt: "9 окт, 19:42",
-    text: "Revital Park: Вы записаны на процедуру к Марии Ивановне Орловой 12 октября в 11:00." },
+    text: "Ревиталь Парк: Вы записаны на процедуру к Марии Ивановне Орловой 12 октября в 11:00." },
   { id: "sms-2", appointmentId: ANNA_APPOINTMENT_ID, kind: "day_before", status: "sent", sendAt: "11 окт, 11:00",
-    text: "Revital Park: напоминаем о приёме завтра в 11:00." },
+    text: "Ревиталь Парк: напоминаем о приёме завтра в 11:00." },
   { id: "sms-3", appointmentId: ANNA_APPOINTMENT_ID, kind: "two_hours", status: "scheduled", sendAt: "12 окт, 09:00",
-    text: "Revital Park: ждём вас сегодня в 11:00. Если планы изменились, запись можно перенести в личном кабинете." },
+    text: "Ревиталь Парк: ждём вас сегодня в 11:00. Если планы изменились, запись можно перенести в личном кабинете." },
 ];
 
 const fresh = (): DemoState => ({ created: [], patches: {}, sms: [...SEED_SMS], settings: { smsEnabled: true } });

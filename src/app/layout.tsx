@@ -1,22 +1,23 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Manrope } from "next/font/google";
+import localFont from "next/font/local";
 import { AppChrome } from "@/components/layout/AppChrome";
 import "./globals.css";
 
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin", "cyrillic"],
-});
-
-const cormorant = Cormorant_Garamond({
-  variable: "--font-cormorant",
-  subsets: ["latin", "cyrillic"],
-  weight: ["400", "500", "600"],
+/** Фирменный шрифт Ревиталь — Myriad Pro (без засечек) */
+const myriad = localFont({
+  variable: "--font-myriad",
+  display: "swap",
+  src: [
+    { path: "../fonts/MyriadPro-Light.otf", weight: "300", style: "normal" },
+    { path: "../fonts/MyriadPro-Regular.otf", weight: "400", style: "normal" },
+    { path: "../fonts/MyriadPro-SemiBold.otf", weight: "600", style: "normal" },
+    { path: "../fonts/MyriadPro-Bold.otf", weight: "700", style: "normal" },
+  ],
 });
 
 export const metadata: Metadata = {
-  title: "Revital Medical Booking — онлайн-запись Revital Park",
-  description: "Собственная система онлайн-записи Revital Park. Интерактивный прототип.",
+  title: "Онлайн-запись — медицинский центр Ревиталь Парк",
+  description: "Собственная система онлайн-записи Ревиталь Парк. Интерактивный прототип.",
 };
 
 export const viewport: Viewport = {
@@ -25,7 +26,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="ru" className={`${manrope.variable} ${cormorant.variable} h-full antialiased`}>
+    <html lang="ru" className={`${myriad.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
         <AppChrome>{children}</AppChrome>
       </body>

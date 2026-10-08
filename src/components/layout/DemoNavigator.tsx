@@ -12,9 +12,9 @@ const TOUR = [
   { n: 2, q: "Чем отличаются гости и амбулаторные пациенты", href: "/booking" },
   { n: 3, q: "Почему нельзя смотреть только на свободный кабинет", href: "/logic?case=busy-doctor" },
   { n: 4, q: "Как одновременно блокируются врач и кабинет", href: "/logic?case=example-1" },
-  { n: 5, q: "Зачем нужен API «Санаториума»", href: "/how-it-works#api" },
+  { n: 5, q: "Зачем нужен обмен данными с «Санаториумом»", href: "/how-it-works#api" },
   { n: 6, q: "Зачем нужны события об изменении записи", href: "/how-it-works#events" },
-  { n: 7, q: "Ценность личного кабинета, SMS и аналитики", href: "/cabinet" },
+  { n: 7, q: "Польза личного кабинета, СМС и аналитики", href: "/cabinet" },
 ];
 
 export function DemoNavigator() {

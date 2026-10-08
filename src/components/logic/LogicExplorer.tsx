@@ -47,12 +47,12 @@ const CASES: Case[] = [
     story: "В 13:00 Зинаида Петровна Волкова проводит процедуру в кабинете №307. Ирина Андреевна Белова свободна и тоже может работать в №307 — но кабинет занят.",
   },
   {
-    id: "example-3", tag: "Пример 3", title: "Нет доступного ресурса",
+    id: "example-3", tag: "Пример 3", title: "Нет свободного кабинета",
     doctorId: "morozov", serviceId: "reflexo", start: 900, window: [780, 1080], withExample: true,
     story: "Алексей Сергеевич Морозов свободен в 15:00. Рефлексотерапию можно проводить только в №410 и №412. Оба кабинета в это время заняты другими врачами.",
   },
   {
-    id: "sandbox", tag: "Попробуйте сами", title: "Песочница",
+    id: "sandbox", tag: "Попробуйте сами", title: "Свой пример",
     doctorId: "orlova", serviceId: "ther-primary", start: 600, window: [540, 1140], withExample: true,
     story: "Выберите врача, услугу и время — система покажет, как она принимает решение.",
   },
@@ -282,7 +282,7 @@ function Formula({ check, runKey }: { check: SlotCheck; runKey: string }) {
         className={`flex items-center gap-2 rounded-2xl px-4 py-2 text-[15px] font-semibold ${check.available ? "bg-gold text-forest-deep" : "bg-danger text-milk"}`}
       >
         {check.available ? <CheckCircle2 size={17} /> : <XCircle size={17} />}
-        {check.available ? "Доступный слот" : "Слот не показывается"}
+        {check.available ? "Время доступно" : "Время не показывается"}
       </motion.div>
     </div>
   );

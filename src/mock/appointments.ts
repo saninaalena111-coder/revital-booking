@@ -26,7 +26,7 @@ const visit = (
 });
 
 const IG_GYN: Attribution = {
-  source: "Instagram", medium: "Reels врача", campaign: "Гинекология после 35", material: "Reels врача",
+  source: "Instagram", medium: "Видео врача", campaign: "Гинекология после 35", material: "Видео врача",
   utm_source: "instagram", utm_medium: "reels", utm_campaign: "gyn_after_35",
   landing_page: "/booking?direction=gynecology", referrer: "instagram.com",
 };

@@ -33,7 +33,7 @@ export function Cabinet() {
           <h1 className="font-display mt-3 text-5xl text-forest-deep sm:text-6xl">Добрый день{patient ? `, ${patient.firstName}` : ""}</h1>
           {patient?.stay && (
             <div className="mt-4 flex flex-wrap gap-2">
-              <Badge tone="sage">Гость Revital Park</Badge>
+              <Badge tone="sage">Гость Ревиталь Парк</Badge>
               <Badge tone="outline">Номер {patient.stay.roomNumber}</Badge>
               <Badge tone="outline">
                 Проживание {dayNum(patient.stay.from)}–{fmtDay(patient.stay.to)}
@@ -233,7 +233,7 @@ function CancelModal({ a, doctor, onClose }: { a: Appointment | null; doctor?: D
           <p className="text-[15px] leading-relaxed text-ink/80">
             {fmtDay(a.date)}, {fmtTime(a.start)} · {doctor.firstName} {doctor.patronymic} {doctor.lastName}
           </p>
-          <p className="mt-3 text-sm text-muted">Время освободится для других пациентов — вместе с врачом и кабинетом. Мы отправим SMS с подтверждением отмены.</p>
+          <p className="mt-3 text-sm text-muted">Время освободится для других пациентов — вместе с врачом и кабинетом. Мы отправим СМС с подтверждением отмены.</p>
           <div className="mt-7 flex flex-wrap justify-end gap-2">
             <Button variant="ghost" onClick={onClose}>
               Оставить
@@ -289,11 +289,11 @@ function Notifications() {
               <MessageSquare size={19} strokeWidth={1.5} />
             </span>
             <div>
-              <div className="text-[16px] font-medium text-forest-deep">Напоминать мне о записях по SMS</div>
+              <div className="text-[16px] font-medium text-forest-deep">Напоминать мне о записях по СМС</div>
               <div className="text-sm text-muted">Сразу после записи, за сутки и за 2 часа до приёма</div>
             </div>
           </div>
-          <Toggle checked={data.settings.smsEnabled} onChange={(v) => notificationsService.setSmsEnabled(v)} label="SMS-напоминания" />
+          <Toggle checked={data.settings.smsEnabled} onChange={(v) => notificationsService.setSmsEnabled(v)} label="СМС-напоминания" />
         </div>
         {[
           { icon: Send, t: "Telegram", s: "Напоминания в мессенджере" },
@@ -312,13 +312,13 @@ function Notifications() {
             <Badge tone="outline">скоро</Badge>
           </div>
         ))}
-        <p className="px-2 text-xs text-muted">Демо: SMS только формируются и показываются здесь. Реальная отправка не подключена.</p>
+        <p className="px-2 text-xs text-muted">Демо: СМС только формируются и показываются здесь. Реальная отправка не подключена.</p>
       </div>
 
       {/* телефон */}
       <div className="mx-auto w-full max-w-[360px] rounded-[44px] border-[10px] border-forest-deep bg-milk p-4 shadow-[var(--shadow-lift)]">
         <div className="mx-auto mb-4 h-5 w-24 rounded-full bg-forest-deep" />
-        <div className="mb-3 text-center text-xs text-muted">Revital Park</div>
+        <div className="mb-3 text-center text-xs text-muted">Ревиталь Парк</div>
         <div className="max-h-[480px] space-y-3 overflow-y-auto pr-1">
           {sms.map((m) => (
             <div key={m.id}>

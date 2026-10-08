@@ -34,7 +34,7 @@ export function Overview({ onOpen }: { onOpen: (tab: "calendar" | "sources" | "s
 
   return (
     <>
-      <AdminTitle title="Обзор дня" lead="Демо-показатели медицинского центра на 12 октября." />
+      <AdminTitle title="Дашборд" lead="Главные показатели медицинского центра за день. Цифры демонстрационные, на 12 октября." />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <Kpi label="Записей сегодня" value={stats.today} accent icon={<CalendarCheck size={18} />} />
         <Kpi label="Подтверждено" value={stats.confirmed} icon={<CheckCircle2 size={18} />} />
@@ -102,8 +102,8 @@ export function Overview({ onOpen }: { onOpen: (tab: "calendar" | "sources" | "s
       </div>
 
       <div className="mt-4 grid gap-4 md:grid-cols-2">
-        <QuickCard icon={<MessageSquare size={18} />} title="SMS-напоминания" text="Цепочка сообщений после записи, за сутки и за 2 часа" onClick={() => onOpen("sms")} />
-        <QuickCard icon={<RefreshCw size={18} />} title="Синхронизация с МИС" text="События об изменениях и резервная проверка по расписанию" onClick={() => onOpen("integration")} />
+        <QuickCard icon={<MessageSquare size={18} />} title="СМС-напоминания" text="Цепочка сообщений после записи, за сутки и за 2 часа" onClick={() => onOpen("sms")} />
+        <QuickCard icon={<RefreshCw size={18} />} title="Обмен данными с МИС" text="Как система узнаёт о переносах и отменах в «Санаториуме»" onClick={() => onOpen("integration")} />
       </div>
     </>
   );
@@ -151,7 +151,7 @@ export function DoctorsView() {
 
   return (
     <>
-      <AdminTitle title="Врачи" lead="Карточка врача: специализации, смены, кабинеты и услуги. В рабочей версии синхронизируется с МИС." />
+      <AdminTitle title="Врачи" lead="Карточка врача: специализации, смены, кабинеты и услуги. В рабочей версии эти данные приходят из МИС «Санаториум»." />
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-[300px_1fr]">
         <div className={`${card} h-fit p-2`}>
           {data.doctors.map((x) => {
@@ -181,7 +181,7 @@ export function DoctorsView() {
                 {d.specialties.map((s) => <Badge key={s} tone="sage">{s}</Badge>)}
               </div>
               <p className="mt-4 text-[14.5px] leading-relaxed text-muted">{d.about}</p>
-              <div className="mt-3 font-mono text-xs text-muted">ID в МИС: {d.misId}</div>
+              <div className="mt-3 text-xs text-muted">Номер врача в МИС: {d.misId.replace(/^\D+/, "")}</div>
             </div>
           </div>
 
@@ -339,15 +339,16 @@ export function RoomsView() {
 /* =============== ИСТОЧНИКИ =============== */
 
 export function AttributionTable({ a }: { a: Attribution }) {
+  // Технические названия полей — в разделе «Для разработчиков → Структура данных»
   const rows: [string, string][] = [
-    ["source", a.source], ["medium", a.medium], ["campaign", a.campaign], ["utm_source", a.utm_source],
-    ["utm_medium", a.utm_medium], ["utm_campaign", a.utm_campaign], ["landing_page", a.landing_page], ["referrer", a.referrer],
+    ["Источник", a.source], ["Канал", a.medium], ["Кампания", a.campaign], ["Метка источника в ссылке", a.utm_source],
+    ["Метка канала в ссылке", a.utm_medium], ["Метка кампании в ссылке", a.utm_campaign], ["Страница входа", a.landing_page], ["Откуда перешёл", a.referrer],
   ];
   return (
     <div className="overflow-hidden rounded-2xl border border-line">
       {rows.map(([k, v]) => (
         <div key={k} className="flex justify-between gap-4 border-b border-line px-4 py-2 text-[13.5px] last:border-0">
-          <span className="font-mono text-[12px] text-muted">{k}</span>
+          <span className="text-[13px] text-muted">{k}</span>
           <span className="truncate text-right text-forest-deep">{v}</span>
         </div>
       ))}
@@ -372,7 +373,7 @@ export function SourcesView() {
 
   return (
     <>
-      <AdminTitle title="Источники записей" lead="Для каждой онлайн-записи сохраняются источник и UTM-метки. Это основа будущей маркетинговой аналитики: какая реклама и какой врач в соцсетях приводят пациентов." />
+      <AdminTitle title="Источники записей" lead="Для каждой онлайн-записи система запоминает, откуда пришёл пациент: из какой рекламы, публикации или ссылки. Так видно, какая реклама и какие публикации врачей действительно приводят пациентов." />
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1fr_300px]">
         <div className={`${card} min-w-0 overflow-hidden`}>
           <div className="overflow-x-auto">
@@ -427,7 +428,7 @@ export function SourcesView() {
   );
 }
 
-/* =============== SMS =============== */
+/* =============== СМС =============== */
 
 const SAMPLE: Appointment = {
   id: "sample", patientId: null, patientName: "Смирнова А.", doctorId: "orlova", serviceId: "cosm-consult", roomId: "201",
@@ -446,7 +447,7 @@ export function SmsView() {
   ];
   return (
     <>
-      <AdminTitle title="SMS-сценарии" lead="Демо: сообщения только формируются. Реальная отправка через SMS-шлюз пока не подключена." />
+      <AdminTitle title="СМС-сценарии" lead="Какие сообщения получает пациент. В прототипе сообщения только показываются на экране — настоящая отправка пока не подключена." />
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
         <div className="space-y-4">
           {chain.map((c, i) => (
@@ -468,7 +469,7 @@ export function SmsView() {
         </div>
         <div className="mx-auto w-full max-w-[340px] rounded-[44px] border-[10px] border-forest-deep bg-milk p-4 shadow-[var(--shadow-lift)]">
           <div className="mx-auto mb-4 h-5 w-24 rounded-full bg-forest-deep" />
-          <div className="mb-4 text-center text-xs text-muted">Revital Park</div>
+          <div className="mb-4 text-center text-xs text-muted">Ревиталь Парк</div>
           <div className="space-y-3">
             {chain.map((c, i) => (
               <motion.div key={c.when} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 + i * 0.5 }}>
@@ -485,7 +486,14 @@ export function SmsView() {
 
 /* =============== ИНТЕГРАЦИЯ =============== */
 
-export function IntegrationView() {
+const EVENT_LABEL: Record<string, string> = {
+  "appointment.created": "Новая запись",
+  "appointment.rescheduled": "Перенос",
+  "appointment.cancelled": "Отмена",
+  "shift.changed": "Смена врача",
+};
+
+export function IntegrationView({ onOpen }: { onOpen: (tab: "dev-exchange" | "dev-events") => void }) {
   const { data } = useService(async () => {
     const [status, events, contract] = await Promise.all([integrationService.syncStatus(), integrationService.events(), integrationService.contract()]);
     return { status, events, contract };
@@ -504,44 +512,45 @@ export function IntegrationView() {
     <>
       <AdminTitle
         title="Интеграция с МИС"
-        lead="Состояние обмена данными с «Санаториумом». Сейчас работает демо-режим на вымышленных данных."
-        right={<Button onClick={sync} disabled={syncing}>{syncing ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />} Синхронизировать</Button>}
+        lead="Как наша система обменивается данными с медицинской программой «Санаториум». Сейчас прототип работает на вымышленных данных."
+        right={<Button onClick={sync} disabled={syncing}>{syncing ? <Loader2 size={16} className="animate-spin" /> : <RefreshCw size={16} />} Обновить данные</Button>}
       />
       <div className="grid gap-4 md:grid-cols-3">
         <div className={`${card} p-6`}>
           <Database size={20} className="text-teal" />
-          <div className="mt-4 text-sm text-muted">Источник данных</div>
-          <div className="font-display mt-1 text-3xl text-forest-deep">Демо (mock)</div>
-          <div className="mt-2 text-xs text-muted">Переключается на МИС без изменений интерфейса</div>
+          <div className="mt-4 text-sm text-muted">Откуда сейчас данные</div>
+          <div className="font-display mt-1 text-3xl text-forest-deep">Демо-данные</div>
+          <div className="mt-2 text-xs text-muted">После подключения — из «Санаториума», экраны не меняются</div>
         </div>
         <div className={`${card} p-6`}>
           <RefreshCw size={20} className="text-teal" />
-          <div className="mt-4 text-sm text-muted">Последняя синхронизация</div>
+          <div className="mt-4 text-sm text-muted">Последнее обновление</div>
           <div className="font-display mt-1 text-3xl text-forest-deep">{synced ? "только что" : data.status.lastSync}</div>
-          <div className="mt-2 text-xs text-muted">Резервная проверка каждые {data.status.pollingIntervalMin} мин</div>
+          <div className="mt-2 text-xs text-muted">Запасная проверка изменений — каждые {data.status.pollingIntervalMin} минут</div>
         </div>
         <div className={`${card} p-6`}>
           <Webhook size={20} className="text-gold" />
-          <div className="mt-4 text-sm text-muted">Webhook от МИС</div>
+          <div className="mt-4 text-sm text-muted">Мгновенные уведомления</div>
           <div className="font-display mt-1 text-3xl text-forest-deep">{data.status.webhook}</div>
-          <div className="mt-2 text-xs text-muted">Нужно уточнить у разработчика МИС</div>
+          <div className="mt-2 text-xs text-muted">Нужно уточнить у разработчика «Санаториума»</div>
         </div>
       </div>
       <div className={`${card} mt-4 p-6`}>
-        <div className="mb-4 text-[15px] font-semibold text-forest-deep">Журнал событий (пример)</div>
+        <div className="mb-4 text-[15px] font-semibold text-forest-deep">Что изменилось в «Санаториуме» сегодня (пример)</div>
         <div className="divide-y divide-line">
           {data.events.map((e) => (
             <div key={e.id} className="flex flex-wrap items-center gap-x-4 gap-y-1 py-3 text-[14px]">
               <span className="w-12 tabular-nums text-muted">{e.at}</span>
-              <code className="rounded-lg bg-cream px-2 py-1 font-mono text-[11.5px] text-teal">{e.type}</code>
+              <Badge tone="sage">{EVENT_LABEL[e.type] ?? "Изменение"}</Badge>
               <span className="flex-1 text-ink/80">{e.label}</span>
             </div>
           ))}
         </div>
       </div>
-      <p className="mt-4 text-sm text-muted">
-        Перечень данных для обмена: {data.contract.receive.length} типов данных получаем, {data.contract.send.length} — передаём. Подробно — в разделе «Как это работает».
-      </p>
+      <div className="mt-4 grid gap-4 md:grid-cols-2">
+        <QuickCard icon={<Database size={18} />} title="Обмен данными с МИС" text={`Получаем ${data.contract.receive.length} видов данных, передаём ${data.contract.send.length}. Все поля и примеры`} onClick={() => onOpen("dev-exchange")} />
+        <QuickCard icon={<Webhook size={18} />} title="События об изменениях" text="Мгновенные уведомления и запасная проверка — подробно" onClick={() => onOpen("dev-events")} />
+      </div>
     </>
   );
 }

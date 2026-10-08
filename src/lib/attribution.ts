@@ -2,10 +2,10 @@ import type { Attribution } from "./types";
 
 const SOURCE_LABEL: Record<string, string> = {
   instagram: "Instagram", site: "Сайт", yandex: "Яндекс Директ", qr: "QR-код",
-  telegram: "Telegram", max: "MAX", sms: "SMS", vk: "ВКонтакте",
+  telegram: "Telegram", max: "MAX", sms: "СМС", vk: "ВКонтакте",
 };
 const MEDIUM_LABEL: Record<string, string> = {
-  reels: "Reels врача", stories: "Stories", cpc: "Поиск", room_card: "Карточка в номере",
+  reels: "Видео врача", stories: "Истории в Instagram", cpc: "Поиск", room_card: "Карточка в номере",
   channel_post: "Пост в канале", message: "Сообщение", broadcast: "Рассылка", button: "Кнопка на сайте",
 };
 const CAMPAIGN_LABEL: Record<string, string> = {

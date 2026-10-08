@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# исходные материалы фирменного стиля (не публикуем в открытом репозитории)
+/Myriad*
+/public*копия*
+# лицензионный шрифт Myriad Pro (Adobe): хранится только локально, нужен для сборки
+/src/fonts/

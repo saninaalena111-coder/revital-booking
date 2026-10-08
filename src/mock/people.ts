@@ -11,7 +11,7 @@ export const PATIENTS: Patient[] = [
     lastName: "Смирнова",
     phone: "+7 (900) 123-45-67",
     type: "guest",
-    stay: { building: "Revital Park", roomNumber: "315", from: "2026-10-08", to: "2026-10-15" },
+    stay: { building: "Ревиталь Парк", roomNumber: "315", from: "2026-10-08", to: "2026-10-15" },
   },
 ];
 
@@ -34,7 +34,7 @@ export const DASHBOARD_STATS = {
 export const RECENT_ATTRIBUTED: { patient: string; doctorId: string; service: string; when: string; a: Attribution }[] = [
   {
     patient: "Григорьева В.", doctorId: "sokolova", service: "Консультация акушера-гинеколога", when: "12 окт, 10:00",
-    a: { source: "Instagram", medium: "Reels врача", campaign: "Гинекология после 35", material: "Reels врача", utm_source: "instagram", utm_medium: "reels", utm_campaign: "gyn_after_35", landing_page: "/booking?direction=gynecology", referrer: "instagram.com" },
+    a: { source: "Instagram", medium: "Видео врача", campaign: "Гинекология после 35", material: "Видео врача", utm_source: "instagram", utm_medium: "reels", utm_campaign: "gyn_after_35", landing_page: "/booking?direction=gynecology", referrer: "instagram.com" },
   },
   {
     patient: "Смирнова А.", doctorId: "orlova", service: "Аппаратная косметологическая процедура", when: "12 окт, 11:00",
@@ -54,7 +54,7 @@ export const RECENT_ATTRIBUTED: { patient: string; doctorId: string; service: st
   },
   {
     patient: "Орехова К.", doctorId: "sokolova", service: "УЗИ органов малого таза", when: "12 окт, 11:00",
-    a: { source: "Instagram", medium: "Stories", campaign: "Гинекология после 35", material: "Stories с опросом", utm_source: "instagram", utm_medium: "stories", utm_campaign: "gyn_after_35", landing_page: "/booking?direction=gynecology", referrer: "instagram.com" },
+    a: { source: "Instagram", medium: "Истории в Instagram", campaign: "Гинекология после 35", material: "Истории с опросом", utm_source: "instagram", utm_medium: "stories", utm_campaign: "gyn_after_35", landing_page: "/booking?direction=gynecology", referrer: "instagram.com" },
   },
   {
     patient: "Захаров П.", doctorId: "volkova", service: "Аппаратная физиотерапия", when: "12 окт, 13:00",
@@ -62,7 +62,7 @@ export const RECENT_ATTRIBUTED: { patient: string; doctorId: string; service: st
   },
   {
     patient: "Кузнецова О.", doctorId: "belova", service: "Программа восстановительной медицины", when: "12 окт, 15:00",
-    a: { source: "SMS", medium: "Рассылка", campaign: "Возврат гостей весны", utm_source: "sms", utm_medium: "broadcast", utm_campaign: "spring_return", landing_page: "/booking", referrer: "—" },
+    a: { source: "СМС", medium: "Рассылка", campaign: "Возврат гостей весны", utm_source: "sms", utm_medium: "broadcast", utm_campaign: "spring_return", landing_page: "/booking", referrer: "—" },
   },
   {
     patient: "Яковлева Т.", doctorId: "orlova", service: "Косметологическая консультация", when: "12 окт, 13:30",

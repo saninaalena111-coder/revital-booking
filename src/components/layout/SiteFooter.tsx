@@ -8,16 +8,16 @@ export function SiteFooter() {
         <div>
           <Logo />
           <p className="mt-5 max-w-sm text-sm leading-relaxed text-muted">
-            Собственная система онлайн-записи Revital Park. Кликабельный прототип: все врачи, пациенты и расписание вымышлены.
+            Собственная система онлайн-записи Ревиталь Парк. Кликабельный прототип: все врачи, пациенты и расписание вымышлены.
           </p>
         </div>
         <FooterCol title="Пациенту" links={[["Записаться", "/booking"], ["Личный кабинет", "/cabinet"], ["Главная", "/"]]} />
         <FooterCol title="Как это работает" links={[["Логика расписания", "/logic"], ["Интеграция с МИС", "/how-it-works"], ["Что нужно от МИС", "/requirements"]]} />
-        <FooterCol title="Сотрудникам" links={[["Админ-панель", "/admin"], ["Календарь дня", "/admin?tab=calendar"], ["Источники записей", "/admin?tab=sources"]]} />
+        <FooterCol title="Сотрудникам" links={[["Дашборд", "/admin"], ["Календарь дня", "/admin?tab=calendar"], ["Для разработчиков", "/admin?tab=dev-exchange"]]} />
       </div>
       <div className="border-t border-line">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-5 text-xs text-muted sm:flex-row sm:justify-between sm:px-8">
-          <span>© 2026 Revital Park · Revital Medical Booking — демонстрационный прототип</span>
+          <span>© 2026 Ревиталь Парк · Онлайн-запись — демонстрационный прототип</span>
           <span>Не является медицинской информационной системой</span>
         </div>
       </div>

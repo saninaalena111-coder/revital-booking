@@ -22,7 +22,7 @@ const fade = {
 const PERKS = [
   { icon: PhoneOff, title: "Запись без звонка", text: "Пара минут в браузере — без ожидания на линии" },
   { icon: CalendarCheck, title: "Актуальное расписание", text: "Только реально свободное время врача и кабинета" },
-  { icon: BellRing, title: "Напоминания о визите", text: "SMS сразу, за сутки и за два часа до приёма" },
+  { icon: BellRing, title: "Напоминания о визите", text: "СМС сразу, за сутки и за два часа до приёма" },
   { icon: UserRound, title: "Личный кабинет пациента", text: "Перенос, отмена и история посещений" },
 ];
 
@@ -33,7 +33,7 @@ const CHANNELS = [
   { icon: QrCode, label: "QR-код", q: "utm_source=qr&utm_medium=room_card&utm_campaign=rooms_qr" },
   { icon: Send, label: "Telegram", q: "utm_source=telegram&utm_medium=channel_post&utm_campaign=no_stress_week" },
   { icon: MessageSquare, label: "MAX", q: "utm_source=max&utm_medium=message&utm_campaign=course_reminder" },
-  { icon: Smartphone, label: "SMS", q: "utm_source=sms&utm_medium=broadcast&utm_campaign=spring_return" },
+  { icon: Smartphone, label: "СМС", q: "utm_source=sms&utm_medium=broadcast&utm_campaign=spring_return" },
   { icon: Link2, label: "Прямая ссылка", q: "" },
 ];
 
@@ -69,7 +69,7 @@ export default function HomePage() {
               <Eyebrow>Медицинский центр · онлайн-запись</Eyebrow>
             </motion.div>
             <motion.h1 variants={fade} custom={1} className="font-display mt-6 text-[46px] leading-[0.98] text-forest-deep sm:text-[68px] lg:text-[78px]">
-              Запись в медицинский центр <em className="text-teal">Revital Park</em>
+              Запись в медицинский центр <span className="text-teal">Ревиталь Парк</span>
             </motion.h1>
             <motion.p variants={fade} custom={2} className="mt-7 max-w-xl text-lg leading-relaxed text-muted">
               Выберите удобное время для консультации. Система автоматически проверит расписание врача и доступность кабинета.
@@ -158,7 +158,7 @@ export default function HomePage() {
           <SectionTitle
             eyebrow="Одна ссылка — любой канал"
             title={<>Пациент приходит по ссылке и сразу записывается</>}
-            lead="Сайт, соцсети, реклама, QR-код в номере, Telegram, MAX или SMS — запись проходит в фирменном интерфейсе Revital Park. Устанавливать стороннее приложение не нужно. Система запоминает, откуда пришёл пациент."
+            lead="Сайт, соцсети, реклама, QR-код в номере, Telegram, MAX или СМС — запись проходит на фирменном сайте Ревиталь Парк. Устанавливать стороннее приложение не нужно. Система запоминает, откуда пришёл пациент."
           />
           <div>
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -177,7 +177,7 @@ export default function HomePage() {
                 </motion.div>
               ))}
             </div>
-            <p className="mt-4 text-xs text-muted">Нажмите на канал — откроется запись с метками источника. Их увидит администратор в разделе «Источники».</p>
+            <p className="mt-4 text-xs text-muted">Нажмите на канал — откроется запись с метками источника. Их видно в дашборде, в разделе «Источники».</p>
           </div>
         </div>
       </section>
@@ -256,7 +256,7 @@ export default function HomePage() {
           <div className="pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full bg-teal/40 blur-3xl" />
           <div className="relative grid grid-cols-1 gap-12 lg:grid-cols-[1.1fr_1fr] lg:items-center">
             <div>
-              <Eyebrow className="!text-sage">Главная бизнес-логика</Eyebrow>
+              <Eyebrow className="!text-sage">Главное правило записи</Eyebrow>
               <h2 className="font-display mt-5 text-4xl leading-[1.05] sm:text-5xl">Свободный кабинет не означает свободного врача</h2>
               <p className="mt-5 max-w-xl text-[17px] leading-relaxed text-sage">
                 Пациент видит только то время, когда одновременно свободны врач и подходящий кабинет. После записи система блокирует их вместе.
@@ -278,7 +278,7 @@ export default function HomePage() {
                 </motion.span>
               ))}
               <motion.span initial={{ opacity: 0, scale: 0.9 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: 0.7 }} className="rounded-full bg-gold px-5 py-2 font-semibold text-forest-deep">
-                Доступный слот
+                Доступное время
               </motion.span>
             </div>
           </div>

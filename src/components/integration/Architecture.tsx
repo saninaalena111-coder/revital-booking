@@ -11,7 +11,7 @@ const SOURCES = [
   { icon: QrCode, label: "QR-код" },
   { icon: Send, label: "Telegram" },
   { icon: MessageSquare, label: "MAX" },
-  { icon: Smartphone, label: "SMS" },
+  { icon: Smartphone, label: "СМС" },
 ];
 
 function Flow({ up, down }: { up: string; down: string }) {
@@ -67,10 +67,10 @@ export function Architecture() {
       <div className="mx-auto max-w-2xl rounded-[28px] bg-forest-deep p-6 text-center text-milk shadow-[var(--shadow-lift)] sm:p-8">
         <div className="flex items-center justify-center gap-3">
           <LogoMark light className="h-9 w-9" />
-          <div className="font-display text-3xl sm:text-4xl">Revital Medical Booking</div>
+          <div className="font-display text-3xl sm:text-4xl">Онлайн-запись Ревиталь</div>
         </div>
         <div className="mt-5 flex flex-wrap justify-center gap-2 text-[13px]">
-          {["Онлайн-запись", "Подбор кабинета", "SMS-напоминания", "Личный кабинет", "Аналитика источников"].map((x) => (
+          {["Онлайн-запись", "Подбор кабинета", "СМС-напоминания", "Личный кабинет", "Аналитика источников"].map((x) => (
             <span key={x} className="rounded-full bg-milk/10 px-3 py-1.5 text-sage">
               {x}
             </span>
@@ -82,8 +82,8 @@ export function Architecture() {
 
       {/* 3. API */}
       <div className="mx-auto w-fit rounded-full border-2 border-dashed border-gold bg-gold-soft/60 px-8 py-3 text-center">
-        <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#7a5a1c]">API</div>
-        <div className="text-sm text-ink/80">защищённый программный доступ</div>
+        <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-[#7a5a1c]">Защищённое подключение</div>
+        <div className="text-sm text-ink/80">программы обмениваются данными автоматически</div>
       </div>
 
       <Flow down="запросы и команды" up="данные и события об изменениях" />
