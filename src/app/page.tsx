@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowRight, BellRing, CalendarCheck, Clock, Globe, Hotel, Link2, Megaphone, MessageSquare,
-  PhoneOff, Plane, QrCode, Send, Smartphone, Footprints, UserRound, Camera, DoorOpen,
+  PhoneOff, Plane, QrCode, Send, Smartphone, Footprints, UserRound, Camera, Quote,
 } from "lucide-react";
 import { LinkButton } from "@/components/ui/Button";
 import { Eyebrow, SectionTitle } from "@/components/ui/Eyebrow";
@@ -117,16 +117,11 @@ export default function HomePage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.95, duration: 0.8 }}
-              className="glass absolute -right-2 bottom-[16%] w-[240px] rounded-3xl p-4 shadow-[var(--shadow-soft)] sm:-right-8"
+              className="absolute -right-2 bottom-[12%] w-[250px] rounded-3xl bg-forest-deep p-5 text-milk shadow-[var(--shadow-lift)] sm:-right-8"
             >
-              <div className="flex items-start gap-3">
-                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-forest text-milk">
-                  <DoorOpen size={16} strokeWidth={1.6} />
-                </span>
-                <div className="text-sm leading-snug text-ink/80">
-                  <b className="font-semibold text-forest-deep">Кабинет подберём сами.</b> Вам нужно выбрать только врача и время.
-                </div>
-              </div>
+              <Quote size={22} strokeWidth={1.4} className="text-gold" />
+              <blockquote className="font-display mt-3 text-[26px] leading-[1.1]">Путь здоровья поколений</blockquote>
+              <div className="mt-3 text-[11px] font-semibold uppercase tracking-[0.2em] text-sage">Ревиталь Парк</div>
             </motion.div>
           </motion.div>
         </div>
