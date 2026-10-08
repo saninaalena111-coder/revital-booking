@@ -1,0 +1,8 @@
+:HL["/revital-booking/_next/static/chunks/34ks71tf9ylws.css","style"]
+:HL["/revital-booking/_next/static/media/MyriadPro_Bold-s.p.1o5crchwyvcgl.otf","font",{"crossOrigin":"","type":"font/otf"}]
+:HL["/revital-booking/_next/static/media/MyriadPro_Light-s.p.29ofsqa7m02y5.otf","font",{"crossOrigin":"","type":"font/otf"}]
+:HL["/revital-booking/_next/static/media/MyriadPro_Regular-s.p.20g782f0gjp4-.otf","font",{"crossOrigin":"","type":"font/otf"}]
+:HL["/revital-booking/_next/static/media/MyriadPro_SemiBold-s.p.31-aliaqqfz50.otf","font",{"crossOrigin":"","type":"font/otf"}]
+2:[["children",{"s":"__PAGE__","h":160}]]
+1:[["children",{"s":"admin","h":96,"c":"$Q2"}]]
+0:{"b":"BKbvcy-F24NV5Taypw14Y","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
