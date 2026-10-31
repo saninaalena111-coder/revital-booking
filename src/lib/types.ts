@@ -128,6 +128,20 @@ export interface Patient {
   phone: string;
   type: PatientType;
   stay?: { building: string; roomNumber: string; from: ISODate; to: ISODate };
+  /* ---- поля медицинской карты МИС (онлайн-записи они не нужны) ---- */
+  patronymic?: string;
+  birthDate?: ISODate;
+  sex?: "f" | "m";
+  city?: string;
+  sanatoriumId?: SanatoriumId;
+  /** Текущее или ближайшее проживание */
+  stayId?: string;
+  programId?: string;
+  dietTableId?: string;
+  allergies?: string[];
+  chronic?: string[];
+  /** Вымышленный документ, в интерфейсе всегда маскируется */
+  passport?: string;
 }
 
 export interface SmsMessage {
@@ -194,4 +208,219 @@ export interface Staff {
   lastSeen: string;
   twoFactor: boolean;
   active: boolean;
+}
+
+/* ---------- Номерной фонд и проживание ---------- */
+
+export interface HotelRoom {
+  id: string;
+  sanatoriumId: SanatoriumId;
+  number: string;
+  building: string;
+  floor: number;
+  /** Категория номера из конфига санатория */
+  typeId: string;
+  /** Номер выведен из продажи */
+  repair?: boolean;
+}
+
+export type StayStatus = "booked" | "checked_in" | "checked_out" | "cancelled";
+export type PaymentStatus = "paid" | "partial" | "unpaid";
+
+export interface Stay {
+  id: string;
+  sanatoriumId: SanatoriumId;
+  /** Гость с медицинской картой; null — бронь без лечения или карта ещё не заведена */
+  patientId: string | null;
+  guestName: string;
+  hotelRoomId: string;
+  from: ISODate;
+  to: ISODate;
+  guests: number;
+  programId: string;
+  status: StayStatus;
+  payment: PaymentStatus;
+  amountRub: number;
+  paidRub: number;
+  source: string;
+  createdAt: ISODate;
+}
+
+/** Состояние номера в шахматке на конкретный день */
+export type RoomDayState = "free" | "booked" | "living" | "cleaning" | "repair";
+
+/* ---------- Медицина: процедуры, кабинеты, назначения ---------- */
+
+export type ProcedureCategory =
+  | "bath" | "shower" | "physio" | "massage" | "ayurveda" | "mud" | "climate" | "inhalation"
+  | "injection" | "fitness" | "diagnostics" | "cosmetology" | "other";
+
+export interface Procedure {
+  id: string;
+  title: string;
+  category: ProcedureCategory;
+  durationMin: number;
+  priceRub: number;
+  /** Кабинеты, где есть оборудование для процедуры */
+  roomIds: string[];
+  /** Оборудование, без которого процедуру не провести */
+  equipment?: string;
+  /** Противопоказания, о которых предупреждает система */
+  caution?: string;
+}
+
+export type MedRoomKind = "bath" | "physio" | "massage" | "procedure" | "diagnostic" | "fitness" | "climate" | "cosmetology";
+
+export interface MedRoom {
+  id: string;
+  sanatoriumId: SanatoriumId;
+  number: string;
+  title: string;
+  kind: MedRoomKind;
+  equipment: string[];
+  /** Сколько гостей одновременно (ванн, кушеток, мест) */
+  capacity: number;
+  open: Minutes;
+  close: Minutes;
+  /** Ответственная медсестра */
+  nurseId?: string;
+}
+
+export interface Program {
+  id: string;
+  title: string;
+  short: string;
+  description: string;
+  minNights: number;
+  pricePerNightRub: number;
+  includes: string[];
+  /** Процедуры, которые обычно назначает врач в рамках программы */
+  typicalProcedureIds: string[];
+}
+
+export type Frequency = "daily" | "every_other_day" | "twice_week" | "once";
+
+export interface Prescription {
+  id: string;
+  patientId: string;
+  procedureId: string;
+  doctorId: string;
+  total: number;
+  frequency: Frequency;
+  from: ISODate;
+  createdAt: ISODate;
+  status: "active" | "cancelled";
+  note?: string;
+}
+
+export type SessionStatus = "planned" | "done" | "missed" | "cancelled";
+
+/** Один сеанс процедуры в расписании гостя */
+export interface ProcedureSession {
+  id: string;
+  prescriptionId: string;
+  patientId: string;
+  procedureId: string;
+  roomId: string;
+  date: ISODate;
+  start: Minutes;
+  end: Minutes;
+  status: SessionStatus;
+  markedBy?: string;
+}
+
+/** Найденный конфликт при раскладке курса — понятным языком */
+export interface PlanConflict {
+  kind: "no_days" | "room_full" | "guest_busy" | "meal" | "stay_ends";
+  text: string;
+}
+
+/* ---------- Приём врача и документы ---------- */
+
+export interface Diagnosis {
+  code: string;
+  title: string;
+}
+
+export interface Visit {
+  id: string;
+  patientId: string;
+  doctorId: string;
+  appointmentId?: string;
+  date: ISODate;
+  start: Minutes;
+  kind: "primary" | "repeat" | "discharge";
+  status: "in_progress" | "done";
+  complaints: string;
+  anamnesis: string;
+  objective: string;
+  diagnoses: Diagnosis[];
+  recommendations: string;
+}
+
+export type DocKind = "protocol" | "discharge" | "referral" | "certificate";
+export type DocStatus = "draft" | "signed" | "sent" | "registered" | "error";
+
+export interface MedDocument {
+  id: string;
+  patientId: string;
+  kind: DocKind;
+  title: string;
+  date: ISODate;
+  doctorId: string;
+  status: DocStatus;
+  visitId?: string;
+  /** Номер регистрации в РЭМД после успешной отправки */
+  remdId?: string;
+  errorText?: string;
+  /** Текст документа для предпросмотра */
+  body: { heading: string; text: string }[];
+}
+
+export interface LabResult {
+  id: string;
+  patientId: string;
+  date: ISODate;
+  title: string;
+  items: { name: string; value: string; unit: string; ref: string; flag?: "high" | "low" }[];
+}
+
+/* ---------- Питание ---------- */
+
+export interface DietTable {
+  id: string;
+  title: string;
+  short: string;
+  description: string;
+}
+
+export type MealKind = "breakfast" | "lunch" | "dinner";
+
+export interface Dish {
+  id: string;
+  title: string;
+  meal: MealKind;
+  /** Каким диетстолам подходит блюдо */
+  tableIds: string[];
+  kcal: number;
+}
+
+export interface MealOrder {
+  id: string;
+  patientId: string;
+  date: ISODate;
+  dishIds: string[];
+}
+
+/* ---------- Безопасность ---------- */
+
+export type AuditKind = "login" | "view" | "edit" | "sign" | "send" | "denied" | "export";
+
+export interface AuditEntry {
+  id: string;
+  at: string;
+  staffId: string;
+  kind: AuditKind;
+  action: string;
+  patientId?: string;
 }

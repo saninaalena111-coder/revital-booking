@@ -12,14 +12,24 @@ import type { Appointment, Attribution, ISODate } from "@/lib/types";
 import { DEMO_TODAY, toMin, weekday } from "@/lib/time";
 import { DOCTORS, ROOMS, SERVICES } from "./catalog";
 import { checkSlot, doctorDayStatus } from "@/lib/scheduling/engine";
+import { overlaps } from "@/lib/time";
+import { dataset } from "./mis/generate";
 
 export const ANNA_APPOINTMENT_ID = "a-anna-1011";
+
+/** Пациенты ручного сценария — их карточки есть в МИС (src/mock/mis/generate.ts) */
+const PATIENT_IDS: Record<string, string> = {
+  "Ковалёва Н.": "p-kovaleva", "Тарасов Д.": "p-tarasov", "Мельникова Е.": "p-melnikova", "Смирнова А.": "p-anna",
+  "Яковлева Т.": "p-yakovleva", "Новикова И.": "p-novikova", "Захаров П.": "p-zakharov", "Фёдорова Л.": "p-fedorova",
+  "Лебедев С.": "p-lebedev", "Кузнецова О.": "p-kuznetsova", "Попов А.": "p-popov", "Соловьёва М.": "p-solovyova",
+  "Григорьева В.": "p-grigorieva", "Орехова К.": "p-orekhova", "Белякова Ю.": "p-belyakova", "Миронова А.": "p-mironova",
+};
 
 const visit = (
   id: string, doctorId: string, serviceId: string, roomId: string,
   start: string, end: string, patientName: string, extra: Partial<Appointment> = {},
 ): Appointment => ({
-  id, misId: `SAN-APP-${id.slice(2).toUpperCase()}`, patientId: null, patientName,
+  id, misId: `SAN-APP-${id.slice(2).toUpperCase()}`, patientId: PATIENT_IDS[patientName] ?? null, patientName,
   doctorId, serviceId, roomId, date: DEMO_TODAY,
   start: toMin(start), end: toMin(end), status: "confirmed", kind: "visit",
   createdVia: "mis", createdAt: "2026-10-09T10:00:00", ...extra,
@@ -95,11 +105,22 @@ export const HANDCRAFTED: Appointment[] = [
 
 /* ---------- генератор занятости для остальных дней ---------- */
 
-const NAMES = [
-  "Андреева О.", "Борисов К.", "Васильева Е.", "Гусев М.", "Давыдова Л.", "Егорова С.",
-  "Жукова А.", "Зайцев В.", "Ильина Т.", "Комаров Р.", "Лазарева Н.", "Максимова Д.",
-  "Никитин Г.", "Осипова В.", "Павлова Ю.", "Романов И.", "Сергеева М.", "Тихонова Е.",
-];
+/**
+ * Кто может прийти на приём в этот день: гости, проживающие в санатории, и амбулаторные пациенты.
+ * Записи достаются реальным пациентам демо-базы МИС, чтобы врач видел их карты.
+ */
+function patientPool(date: ISODate) {
+  const d = dataset();
+  const pool = d.patients.filter((p) =>
+    p.type === "outpatient" || (p.stay && p.stay.from <= date && date < p.stay.to));
+  const sessions = d.sessions.filter((s) => s.date === date);
+  return {
+    pool,
+    /** Пациент свободен: в это время у него нет процедуры */
+    free: (patientId: string, start: number, end: number) =>
+      !sessions.some((s) => s.patientId === patientId && overlaps(start - 10, end + 10, s.start, s.end)),
+  };
+}
 
 function rng(seed: string) {
   let h = 1779033703;
@@ -121,6 +142,7 @@ export function generatedFor(date: ISODate): Appointment[] {
   const list: Appointment[] = [];
   const ctx = { doctors: DOCTORS, rooms: ROOMS, services: SERVICES, appointments: list };
   const fill = weekday(date) === 6 ? 0.35 : 0.5;
+  const { pool, free } = patientPool(date);
 
   for (const doc of DOCTORS) {
     if (doctorDayStatus(doc, date) !== "on_shift") continue;
@@ -129,9 +151,13 @@ export function generatedFor(date: ISODate): Appointment[] {
       const serviceId = doc.serviceIds[Math.floor(rand() * doc.serviceIds.length)];
       const c = checkSlot(ctx, doc.id, serviceId, date, t);
       if (!c.available) continue;
+      // Тот же вызов rand(), что и раньше: занятость врачей не меняется, меняется только пациент
+      const k = Math.floor(rand() * pool.length);
+      const patient = [...pool.slice(k), ...pool.slice(0, k)].find((p) => free(p.id, t, c.end) && !list.some((a) => a.patientId === p.id && overlaps(t, c.end, a.start, a.end)));
       list.push({
         id: `g-${date}-${doc.id}-${t}`, misId: `SAN-APP-G${t}${date.slice(-2)}`,
-        patientId: null, patientName: NAMES[Math.floor(rand() * NAMES.length)],
+        patientId: patient?.id ?? null,
+        patientName: patient ? `${patient.lastName} ${patient.firstName[0]}.` : "Гость санатория",
         doctorId: doc.id, serviceId, roomId: c.assignedRoomId, date,
         start: t, end: c.end, status: "confirmed", kind: "visit",
         createdVia: rand() > 0.55 ? "online" : "mis", createdAt: `${date}T08:00:00`,

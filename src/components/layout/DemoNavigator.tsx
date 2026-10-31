@@ -49,7 +49,7 @@ export function DemoNavigator() {
             <div className="mt-4 flex items-center justify-between border-t border-line pt-4 text-xs text-muted">
               <span>Все данные вымышлены</span>
               <button onClick={() => db.reset()} className="inline-flex items-center gap-1.5 hover:text-forest">
-                <RotateCcw size={13} /> Сбросить демо
+                <RotateCcw size={13} /> Сбросить демо-данные
               </button>
             </div>
           </motion.div>
