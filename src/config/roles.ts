@@ -27,7 +27,7 @@ export const SECTIONS: Record<SectionId, Section> = {
   procedures: { id: "procedures", title: "Процедурный кабинет", href: "/mis/procedures", medical: true },
   rooms: { id: "rooms", title: "Загрузка кабинетов", href: "/mis/rooms-schedule" },
   egisz: { id: "egisz", title: "ЕГИСЗ и документы", href: "/mis/egisz", medical: true },
-  stays: { id: "stays", title: "Шахматка номеров", href: "/mis/stays" },
+  stays: { id: "stays", title: "Размещение", href: "/mis/stays" },
   bookings: { id: "bookings", title: "Брони и путёвки", href: "/mis/bookings" },
   meals: { id: "meals", title: "Питание", href: "/mis/meals" },
   records: { id: "records", title: "Онлайн-запись", href: "/mis/booking" },

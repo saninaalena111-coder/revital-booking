@@ -79,6 +79,9 @@ export const staysService = {
     return san.roomTypes.find((t) => t.id === room.typeId)?.title ?? "Номер";
   },
 
+  /** Номер брони — синхронно, для подписей в списках */
+  roomById: (id: string): HotelRoom | undefined => hotelRooms().find((r) => r.id === id),
+
   async rooms(sanatoriumId: SanatoriumId): Promise<HotelRoom[]> {
     await latency();
     return hotelRooms().filter(inSan(sanatoriumId));

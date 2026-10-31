@@ -16,6 +16,7 @@ import { DocumentSheet } from "./DocumentPreview";
 import { AddPrescription, CourseList } from "./Prescriptions";
 import { templateFor, type ExamTemplate, type FieldKey } from "./templates";
 import { VoiceInput } from "./VoiceInput";
+import { SignModal } from "../egisz/SignModal";
 
 /** Приём врача: открывается из «Моего дня» по записи (?appointment=) или по осмотру (?visit=) */
 export function Reception() {
@@ -60,6 +61,7 @@ function ReceptionForm({ visit, patient, template }: { visit: Visit; patient: Pa
   const [saved, setSaved] = useState<"idle" | "saving" | "saved">("idle");
   const [protocol, setProtocol] = useState<MedDocument | null>(null);
   const [finishing, setFinishing] = useState(false);
+  const [signing, setSigning] = useState<MedDocument | null>(null);
   const first = useRef(true);
   const refs = useRef<Partial<Record<FieldKey, HTMLTextAreaElement | null>>>({});
 
@@ -184,12 +186,13 @@ function ReceptionForm({ visit, patient, template }: { visit: Visit; patient: Pa
             <DocumentSheet doc={protocol} patient={patient} />
             <div className="mt-5 flex flex-wrap justify-end gap-2">
               <LinkButton href={`/mis/patient?id=${patient.id}&tab=documents`} variant="ghost">Карта гостя</LinkButton>
-              <LinkButton href="/mis/egisz" variant="secondary">Подписать документ</LinkButton>
+              <Button variant="secondary" onClick={() => setSigning(protocol)}>Подписать документ</Button>
               <LinkButton href="/mis/today">К следующему пациенту <ArrowRight size={16} /></LinkButton>
             </div>
           </>
         )}
       </Modal>
+      <SignModal doc={signing} onClose={() => setSigning(null)} onSigned={(t) => { toast.show(t); setProtocol(null); router.push("/mis/today"); }} />
       {toast.node}
     </>
   );

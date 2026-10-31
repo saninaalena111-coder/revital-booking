@@ -17,6 +17,7 @@ import { Segmented } from "@/components/ui/Segmented";
 import { BackLink, card, DocStatusPill, EmptyState, Loading, SessionStatusPill, StatusPill, useToast } from "../ui";
 import { DocumentModal } from "./DocumentPreview";
 import { AddPrescription, CourseList } from "./Prescriptions";
+import { SignModal } from "../egisz/SignModal";
 
 type Tab = "visits" | "prescriptions" | "schedule" | "documents" | "labs";
 const TABS: { value: Tab; label: string }[] = [
@@ -68,6 +69,7 @@ function PatientHeader({ patient }: { patient: Patient }) {
   const toast = useToast();
   const [busy, setBusy] = useState(false);
   const [doc, setDoc] = useState<MedDocument | null>(null);
+  const [signing, setSigning] = useState<MedDocument | null>(null);
   const isDoctor = role?.id === "doctor";
   const { data: todayVisit } = useService(async () => {
     if (!user?.doctorId) return undefined;
@@ -143,7 +145,8 @@ function PatientHeader({ patient }: { patient: Patient }) {
         ))}
       </dl>
       <DocumentModal doc={doc} patient={patient} onClose={() => setDoc(null)}
-        actions={<LinkButton href="/mis/egisz" size="md">Подписать и отправить</LinkButton>} />
+        actions={<Button onClick={() => { setSigning(doc); setDoc(null); }}>Подписать</Button>} />
+      <SignModal doc={signing} onClose={() => setSigning(null)} onSigned={toast.show} />
       {toast.node}
     </div>
   );

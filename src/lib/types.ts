@@ -142,6 +142,8 @@ export interface Patient {
   chronic?: string[];
   /** Вымышленный документ, в интерфейсе всегда маскируется */
   passport?: string;
+  /** СНИЛС — обязателен для регистрации документов в РЭМД */
+  snils?: string;
 }
 
 export interface SmsMessage {
