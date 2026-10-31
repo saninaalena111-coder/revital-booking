@@ -17,3 +17,7 @@ export { staysService, STAY_STATUS_LABEL, PAYMENT_LABEL, ROOM_STATE_LABEL } from
 export { proceduresService, prescriptionsService, SESSION_STATUS_LABEL } from "./proceduresService";
 export { visitsService, documentsService, labsService, DAY_STATUS_LABEL, DOC_STATUS_LABEL } from "./visitsService";
 export { mealsService, RESTAURANT_LABEL, TOMORROW } from "./mealsService";
+export type { DayItem, DocRow } from "./visitsService";
+export type { SessionRow, CourseProgress } from "./proceduresService";
+export type { MealGuest, RestaurantId } from "./mealsService";
+export type { GridRow, GridCell } from "./staysService";
