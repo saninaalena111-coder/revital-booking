@@ -16,6 +16,7 @@ import { DEMO_TODAY, fmtDay, fmtWeekdayLong } from "@/lib/time";
 import { TenantLogo } from "./TenantLogo";
 import { NoAccess } from "./NoAccess";
 import { ViewSwitch } from "./ViewSwitch";
+import { Assistant } from "./help/Assistant";
 
 export const SECTION_ICONS: Record<SectionId, LucideIcon> = {
   today: Sun,
@@ -177,6 +178,8 @@ export function MisShell({ children }: { children: ReactNode }) {
           {allowed ? children : <NoAccess section={section!} home={home} />}
         </div>
       </div>
+
+      <Assistant />
 
       {/* меню на телефоне и планшете */}
       <AnimatePresence>

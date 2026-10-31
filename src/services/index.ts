@@ -21,3 +21,6 @@ export type { DayItem, DocRow } from "./visitsService";
 export type { SessionRow, CourseProgress } from "./proceduresService";
 export type { MealGuest, RestaurantId } from "./mealsService";
 export type { GridRow, GridCell } from "./staysService";
+export type { NetworkSummary } from "./analyticsService";
+export { assistantService } from "./assistantService";
+export type { AssistantAnswer } from "./assistantService";

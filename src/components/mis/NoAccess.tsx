@@ -1,8 +1,10 @@
 "use client";
 
 import { Lock, ShieldCheck } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { SECTIONS, type SectionId } from "@/config/roles";
 import { useSession } from "@/hooks/useSession";
+import { auditService } from "@/services";
 import { LinkButton } from "@/components/ui/Button";
 
 /**
@@ -12,6 +14,14 @@ import { LinkButton } from "@/components/ui/Button";
 export function NoAccess({ section, home }: { section: SectionId; home: string }) {
   const { role } = useSession();
   const medical = SECTIONS[section].medical;
+  const logged = useRef(false);
+
+  // Попытка открыть закрытый раздел попадает в журнал действий
+  useEffect(() => {
+    if (logged.current) return;
+    logged.current = true;
+    auditService.log("denied", `Попытка открыть раздел «${SECTIONS[section].title}» — нет доступа`);
+  }, [section]);
   return (
     <div className="mx-auto max-w-xl py-10 text-center sm:py-16">
       <span className="mx-auto grid h-16 w-16 place-items-center rounded-full bg-sage-soft text-forest">

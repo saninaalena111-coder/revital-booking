@@ -5,7 +5,7 @@
  * В рабочей версии — серверная сессия с входом в два шага.
  */
 import type { RoleId, SanatoriumId } from "@/lib/types";
-import { DEMO_USER } from "./mis/staff";
+import { DEMO_USER, STAFF } from "./mis/staff";
 
 export interface SessionState {
   role: RoleId | null;
@@ -55,8 +55,11 @@ export const session = {
     listeners.forEach((l) => l());
   },
 
+  /** Руководитель, маркетолог и администратор работают со всей сетью, остальные — со своим санаторием */
   signIn(role: RoleId) {
-    set({ role, staffId: DEMO_USER[role] });
+    if (state.role === role) return;
+    const network = role === "manager" || role === "marketer" || role === "sysadmin";
+    set({ role, staffId: DEMO_USER[role], sanatoriumId: network ? "all" : (STAFF.find((x) => x.id === DEMO_USER[role])?.sanatoriumId ?? "gelendzhik") });
   },
   signOut() {
     set({ role: null, staffId: null });
