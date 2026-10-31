@@ -68,3 +68,17 @@ export const relativeDay = (d: ISODate) => {
 
 export const WORKDAY_START = toMin("09:00");
 export const WORKDAY_END = toMin("19:00");
+
+/** «Сейчас» в демо-сценарии: 10:40 — часть процедур дня уже проведена */
+export const DEMO_NOW: Minutes = 10 * 60 + 40;
+
+/** Возраст на демо-«сегодня» */
+export const ageOn = (birth: ISODate, on: ISODate = DEMO_TODAY) => {
+  const [by, bm, bd] = birth.split("-").map(Number);
+  const [y, m, d] = on.split("-").map(Number);
+  return y - by - (m < bm || (m === bm && d < bd) ? 1 : 0);
+};
+
+/** Количество ночей между датами заезда и выезда */
+export const nightsBetween = (from: ISODate, to: ISODate) =>
+  Math.round((parseDate(to).getTime() - parseDate(from).getTime()) / 86400000);

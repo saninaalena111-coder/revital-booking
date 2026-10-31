@@ -1,19 +1,9 @@
 import type { Metadata, Viewport } from "next";
-import localFont from "next/font/local";
 import { AppChrome } from "@/components/layout/AppChrome";
+// Фирменный шрифт Ревиталь — Myriad Pro. Модуль создаёт scripts/prepare-fonts.mjs:
+// без лицензионных файлов шрифта сайт собирается на системном шрифте.
+import { brandFont as myriad } from "@/fonts";
 import "./globals.css";
-
-/** Фирменный шрифт Ревиталь — Myriad Pro (без засечек) */
-const myriad = localFont({
-  variable: "--font-myriad",
-  display: "swap",
-  src: [
-    { path: "../fonts/MyriadPro-Light.otf", weight: "300", style: "normal" },
-    { path: "../fonts/MyriadPro-Regular.otf", weight: "400", style: "normal" },
-    { path: "../fonts/MyriadPro-SemiBold.otf", weight: "600", style: "normal" },
-    { path: "../fonts/MyriadPro-Bold.otf", weight: "700", style: "normal" },
-  ],
-});
 
 export const metadata: Metadata = {
   title: "Онлайн-запись — медицинский центр Ревиталь Парк",

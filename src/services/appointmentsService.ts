@@ -13,13 +13,30 @@ import { DOCTORS, ROOMS, SERVICES } from "@/mock/catalog";
 import { db } from "@/mock/db";
 import { ANNA_APPOINTMENT_ID, HANDCRAFTED } from "@/mock/appointments";
 import { checkSlot, findSlots, type ScheduleContext } from "@/lib/scheduling/engine";
-import { addDays } from "@/lib/time";
+import { addDays, DEMO_NOW, DEMO_TODAY, overlaps } from "@/lib/time";
+import { tables } from "@/mock/mis/store";
+import { CURRENT_PATIENT_ID } from "@/mock/people";
 import { latency, uid } from "./config";
 import { notificationsService } from "./notificationsService";
 
 const ctxFor = (date: ISODate, appointments?: Appointment[]): ScheduleContext => ({
   doctors: DOCTORS, rooms: ROOMS, services: SERVICES, appointments: appointments ?? db.byDate(date),
 });
+
+/**
+ * Время, которое можно предложить гостю: не в прошлом (демо-«сейчас» 10:40)
+ * и не поверх его процедур из МИС. В демо все записи оформляются на гостя
+ * «этого устройства», поэтому сверяемся с его расписанием процедур.
+ * РЕАЛЬНЫЙ API: расписание гостя приходит из МИС вместе со слотами.
+ */
+function offerable(slot: Slot) {
+  if (slot.date === DEMO_TODAY && slot.start < DEMO_NOW) return false;
+  return !tables.sessions.all().some(
+    (x) => x.patientId === CURRENT_PATIENT_ID && x.date === slot.date && x.status !== "cancelled" && overlaps(slot.start - 10, slot.end + 10, x.start, x.end),
+  );
+}
+
+const offerableSlots = (date: ISODate, doctorId: string, serviceId: string) => findSlots(ctxFor(date), doctorId, serviceId, date).filter(offerable);
 
 export interface CreateAppointmentInput {
   patientId: string | null;
@@ -48,14 +65,14 @@ export const appointmentsService = {
 
   async slots(doctorId: string, serviceId: string, date: ISODate): Promise<Slot[]> {
     await latency();
-    return findSlots(ctxFor(date), doctorId, serviceId, date);
+    return offerableSlots(date, doctorId, serviceId);
   },
 
   /** Количество свободных слотов по дням — для подсветки календаря */
   async availabilityByDay(doctorIds: string[], serviceId: string, dates: ISODate[]) {
     await latency();
     return Object.fromEntries(
-      dates.map((d) => [d, doctorIds.reduce((n, id) => n + findSlots(ctxFor(d), id, serviceId, d).length, 0)]),
+      dates.map((d) => [d, doctorIds.reduce((n, id) => n + offerableSlots(d, id, serviceId).length, 0)]),
     ) as Record<ISODate, number>;
   },
 
@@ -64,7 +81,7 @@ export const appointmentsService = {
     await latency();
     for (let i = 0; i < days; i++) {
       const d = addDays(from, i);
-      const s = findSlots(ctxFor(d), doctorId, serviceId, d);
+      const s = offerableSlots(d, doctorId, serviceId);
       if (s.length) return s[0];
     }
     return null;

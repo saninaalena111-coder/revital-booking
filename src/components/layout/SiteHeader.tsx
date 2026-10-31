@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
-import { LayoutDashboard, Menu, X } from "lucide-react";
+import { BriefcaseMedical, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Logo } from "@/components/brand/Logo";
 
@@ -45,10 +45,10 @@ export function SiteHeader() {
             </Link>
           ))}
           <Link
-            href="/admin"
+            href="/mis"
             className="ml-3 inline-flex items-center gap-2 rounded-full border border-forest/20 px-4 py-2 text-[13.5px] font-medium text-forest transition hover:border-forest hover:bg-forest hover:text-milk"
           >
-            <LayoutDashboard size={15} strokeWidth={1.6} /> Дашборд
+            <BriefcaseMedical size={15} strokeWidth={1.6} /> Для сотрудников
           </Link>
         </nav>
         <button className="grid h-10 w-10 place-items-center rounded-full border border-line md:hidden" onClick={() => setOpenOn(open ? null : pathname)} aria-label="Меню">
@@ -69,8 +69,8 @@ export function SiteHeader() {
                   {n.label}
                 </Link>
               ))}
-              <Link href="/admin" className="mt-2 flex items-center gap-2 rounded-2xl bg-forest px-4 py-3 text-milk">
-                <LayoutDashboard size={16} /> Дашборд для сотрудников
+              <Link href="/mis" className="mt-2 flex items-center gap-2 rounded-2xl bg-forest px-4 py-3 text-milk">
+                <BriefcaseMedical size={16} /> Для сотрудников — МИС
               </Link>
             </div>
           </motion.nav>

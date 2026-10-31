@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { Bell, CalendarDays, Check, ClipboardList, DoorOpen, Loader2, MessageSquare, Plus, Send, X } from "lucide-react";
+import { Bell, CalendarDays, Check, DoorOpen, Loader2, MessageSquare, Plus, Send, X } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 import type { Appointment, Doctor, Service, Slot } from "@/lib/types";
@@ -16,13 +16,15 @@ import { Segmented } from "@/components/ui/Segmented";
 import { Toggle } from "@/components/ui/Toggle";
 import { DoctorPortrait } from "@/components/brand/DoctorPortrait";
 import { SlotPicker } from "@/components/booking/SlotPicker";
-import { Prescriptions, StageBadge } from "@/components/integration/Prescriptions";
+import { ViewSwitch } from "@/components/mis/ViewSwitch";
+import { GuestCourse, GuestDocuments, GuestMeals, GuestSchedule, GuestStay } from "./GuestTabs";
 
-type Tab = "visits" | "prescriptions" | "notifications";
+type Tab = "schedule" | "visits" | "course" | "meals" | "documents" | "stay" | "notifications";
+const TABS: Tab[] = ["schedule", "visits", "course", "meals", "documents", "stay", "notifications"];
 
 export function Cabinet() {
   const params = useSearchParams();
-  const [tab, setTab] = useState<Tab>((params.get("tab") as Tab) ?? "visits");
+  const [tab, setTab] = useState<Tab>(TABS.find((t) => t === params.get("tab")) ?? "schedule");
   const { data: patient } = useService(() => patientsService.current(), []);
 
   return (
@@ -41,9 +43,12 @@ export function Cabinet() {
             </div>
           )}
         </div>
-        <LinkButton href="/booking">
-          <Plus size={17} /> Новая запись
-        </LinkButton>
+        <div className="flex flex-col items-start gap-3 sm:items-end">
+          <ViewSwitch current="guest" staffHref={`/mis/patient?id=${patient?.id ?? "p-anna"}&as=doctor`} />
+          <LinkButton href="/booking">
+            <Plus size={17} /> Новая запись
+          </LinkButton>
+        </div>
       </div>
 
       <Segmented
@@ -51,16 +56,24 @@ export function Cabinet() {
         value={tab}
         onChange={setTab}
         options={[
-          { value: "visits", label: "Мои записи" },
-          { value: "prescriptions", label: "Мои назначения" },
+          { value: "schedule", label: "Моё расписание" },
+          { value: "visits", label: "Записи к врачам" },
+          { value: "course", label: "Мои назначения" },
+          { value: "meals", label: "Питание" },
+          { value: "documents", label: "Мои документы" },
+          { value: "stay", label: "Проживание" },
           { value: "notifications", label: "Уведомления" },
         ]}
       />
 
       <AnimatePresence mode="wait">
         <motion.div key={tab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }} className="mt-8">
+          {tab === "schedule" && patient && <GuestSchedule patient={patient} />}
           {tab === "visits" && <Visits patientId={patient?.id} />}
-          {tab === "prescriptions" && <PrescriptionsTab />}
+          {tab === "course" && patient && <GuestCourse patient={patient} />}
+          {tab === "meals" && patient && <GuestMeals patient={patient} />}
+          {tab === "documents" && patient && <GuestDocuments patient={patient} />}
+          {tab === "stay" && patient && <GuestStay patient={patient} />}
           {tab === "notifications" && <Notifications />}
         </motion.div>
       </AnimatePresence>
@@ -245,28 +258,6 @@ function CancelModal({ a, doctor, onClose }: { a: Appointment | null; doctor?: D
         </>
       )}
     </Modal>
-  );
-}
-
-/* ---------------- назначения (этап 2) ---------------- */
-
-function PrescriptionsTab() {
-  return (
-    <div>
-      <div className="rounded-[28px] border border-dashed border-gold/70 bg-gold-soft/30 p-6 sm:p-8">
-        <div className="flex flex-wrap items-center gap-3">
-          <ClipboardList size={22} strokeWidth={1.4} className="text-[#7a5a1c]" />
-          <StageBadge />
-        </div>
-        <p className="mt-4 max-w-3xl text-[15.5px] leading-relaxed text-ink/80">
-          После консультации терапевта назначения могут поступать из медицинской системы «Санаториум». Тогда пациент сможет выбирать удобное время только для разрешённых ему процедур.
-        </p>
-        <p className="mt-2 text-sm text-muted">Ниже — пример того, как это будет выглядеть. Сейчас раздел не связан с МИС.</p>
-      </div>
-      <div className="mt-6">
-        <Prescriptions />
-      </div>
-    </div>
   );
 }
 

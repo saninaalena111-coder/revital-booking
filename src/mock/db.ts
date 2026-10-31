@@ -11,11 +11,19 @@
 import type { Appointment, ISODate, SmsMessage } from "@/lib/types";
 import { ANNA_APPOINTMENT_ID, HANDCRAFTED, generatedFor } from "./appointments";
 
+/** Изменения поверх сгенерированной таблицы МИС: новые строки и правки существующих */
+interface TableState {
+  added: { id: string }[];
+  patches: Record<string, object>;
+}
+
 interface DemoState {
   created: Appointment[];
   patches: Record<string, Partial<Appointment>>;
   sms: SmsMessage[];
   settings: { smsEnabled: boolean };
+  /** Таблицы МИС: назначения, сеансы процедур, документы, проживание, питание, журнал */
+  tables: Record<string, TableState>;
 }
 
 const KEY = "revital-booking-demo-v2";
@@ -29,11 +37,12 @@ const SEED_SMS: SmsMessage[] = [
     text: "Ревиталь Парк: ждём вас сегодня в 11:00. Если планы изменились, запись можно перенести в личном кабинете." },
 ];
 
-const fresh = (): DemoState => ({ created: [], patches: {}, sms: [...SEED_SMS], settings: { smsEnabled: true } });
+const fresh = (): DemoState => ({ created: [], patches: {}, sms: [...SEED_SMS], settings: { smsEnabled: true }, tables: {} });
 
 let state: DemoState = fresh();
 let version = 0;
 const listeners = new Set<() => void>();
+const tableCache = new Map<string, { version: number; rows: { id: string }[] }>();
 
 function emit() {
   version++;
@@ -103,5 +112,38 @@ export const db = {
   setSettings(s: Partial<DemoState["settings"]>) {
     state = { ...state, settings: { ...state.settings, ...s } };
     emit();
+  },
+
+  /**
+   * Таблица МИС: сгенерированные строки (base) + добавленные в демо + правки.
+   * Сгенерированное не хранится в localStorage — только то, что изменили на показе.
+   */
+  table<T extends { id: string }>(name: string, base: () => T[]) {
+    const own = (): TableState => state.tables[name] ?? { added: [], patches: {} };
+    const save = (t: TableState) => {
+      state = { ...state, tables: { ...state.tables, [name]: t } };
+      emit();
+    };
+    return {
+      all(): T[] {
+        const hit = tableCache.get(name);
+        if (hit && hit.version === version) return hit.rows as T[];
+        const t = own();
+        const rows = [...base(), ...(t.added as T[])].map((r) => (t.patches[r.id] ? { ...r, ...t.patches[r.id] } : r));
+        tableCache.set(name, { version, rows });
+        return rows;
+      },
+      find(id: string): T | undefined {
+        return this.all().find((r) => r.id === id);
+      },
+      insert(...rows: T[]) {
+        const t = own();
+        save({ ...t, added: [...t.added, ...rows] });
+      },
+      patch(id: string, p: Partial<T>) {
+        const t = own();
+        save({ ...t, patches: { ...t.patches, [id]: { ...t.patches[id], ...p } } });
+      },
+    };
   },
 };
