@@ -9,3 +9,5 @@ export { integrationService } from "./integrationService";
 export { notificationsService, smsTemplates } from "./notificationsService";
 export { DATA_SOURCE } from "./config";
 export { analyticsService } from "./analyticsService";
+export { sessionService } from "./sessionService";
+export { staffService, staffShortName, staffFullName } from "./staffService";

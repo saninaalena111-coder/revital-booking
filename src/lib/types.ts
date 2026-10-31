@@ -169,3 +169,29 @@ export interface Slot {
   /** Кабинет назначается системой и НЕ показывается пациенту до подтверждения */
   roomId: string;
 }
+
+/* ================================================================
+ * МИС: сеть санаториев, персонал, роли.
+ * ================================================================ */
+
+export type SanatoriumId = "gelendzhik" | "sochi" | "balashikha" | "fourth";
+
+export type RoleId = "doctor" | "nurse" | "reception" | "booking" | "restaurant" | "manager" | "marketer" | "sysadmin";
+
+export interface Staff {
+  id: string;
+  sanatoriumId: SanatoriumId;
+  role: RoleId;
+  lastName: string;
+  firstName: string;
+  patronymic: string;
+  position: string;
+  /** Связь с карточкой врача онлайн-записи (для врачей) */
+  doctorId?: string;
+  /** Процедурный кабинет медсестры */
+  roomId?: string;
+  email: string;
+  lastSeen: string;
+  twoFactor: boolean;
+  active: boolean;
+}

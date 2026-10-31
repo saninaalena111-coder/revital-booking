@@ -3,11 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "fonts": "node scripts/prepare-fonts.mjs",
+    "predev": "node scripts/prepare-fonts.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/prepare-fonts.mjs",
     "build": "next build",
     "start": "next start",
+    "prelint": "node scripts/prepare-fonts.mjs",
     "lint": "eslint",
-    "deploy": "PAGES_BASE_PATH=/revital-booking next build && bash scripts/deploy-pages.sh"
+    "deploy": "node scripts/prepare-fonts.mjs && PAGES_BASE_PATH=/revital-booking next build && bash scripts/deploy-pages.sh"
   },
   "dependencies": {
     "framer-motion": "^14.0.0",
