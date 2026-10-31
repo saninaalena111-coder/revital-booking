@@ -4,7 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowRight, BellRing, CalendarCheck, Clock, Globe, Hotel, Link2, Megaphone, MessageSquare,
-  PhoneOff, Plane, QrCode, Send, Smartphone, Footprints, UserRound, Camera, Quote,
+  PhoneOff, Plane, QrCode, Send, Smartphone, Footprints, UserRound, Camera, Quote, BriefcaseMedical,
 } from "lucide-react";
 import { LinkButton } from "@/components/ui/Button";
 import { Eyebrow, SectionTitle } from "@/components/ui/Eyebrow";
@@ -52,6 +52,17 @@ const PATHS = [
     icon: Footprints, path: "outpatient", title: "Без проживания",
     text: "Амбулаторный приём: каталог направлений, выбор врача, услуги и удобного времени.",
     tag: "Свободный выбор специалиста",
+  },
+];
+
+const SIDES = [
+  {
+    icon: UserRound, href: "/cabinet", title: "Глазами гостя", cta: "Открыть личный кабинет",
+    text: "Расписание процедур по дням, курс «назначено — пройдено», заказ питания по диетстолу, выписка и документы. Крупно и удобно с телефона.",
+  },
+  {
+    icon: BriefcaseMedical, href: "/mis", title: "Глазами сотрудника", cta: "Войти в МИС",
+    text: "Медицинская система сети санаториев: врач, медсестра, ресепшн, ресторан, руководитель. Приём голосом, назначения, ЕГИСЗ, шахматка и аналитика.",
   },
 ];
 
@@ -144,6 +155,34 @@ export default function HomePage() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ДВЕ СТОРОНЫ ОДНОГО ПРОДУКТА */}
+      <section className="mx-auto max-w-7xl px-4 pt-16 sm:px-8 lg:pt-24">
+        <SectionTitle
+          eyebrow="Один продукт — две стороны"
+          title="Посмотрите на одну ситуацию глазами гостя и глазами сотрудника"
+          lead="Гость записался на сайте — врач сразу видит запись. Врач назначил процедуры — у гостя появилось расписание. Медсестра отметила процедуру — у гостя обновился курс."
+        />
+        <div className="mt-10 grid gap-4 md:grid-cols-2">
+          {SIDES.map((s, i) => (
+            <motion.div key={s.href} initial={{ opacity: 0, y: 14 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1, duration: 0.6 }}>
+              <Link
+                href={s.href}
+                className={`group flex h-full flex-col rounded-[28px] p-7 transition sm:p-9 ${i ? "bg-forest-deep text-milk hover:bg-forest" : "border border-line bg-milk hover:border-forest/40 hover:shadow-[var(--shadow-soft)]"}`}
+              >
+                <span className={`grid h-14 w-14 place-items-center rounded-2xl ${i ? "bg-gold text-forest-deep" : "bg-sage-soft text-forest"}`}>
+                  <s.icon size={26} strokeWidth={1.4} />
+                </span>
+                <span className={`font-display mt-6 text-[34px] leading-tight ${i ? "" : "text-forest-deep"}`}>{s.title}</span>
+                <span className={`mt-2 text-[16px] leading-relaxed ${i ? "text-sage" : "text-muted"}`}>{s.text}</span>
+                <span className={`mt-6 inline-flex items-center gap-2 text-[15px] font-medium ${i ? "text-gold" : "text-forest"}`}>
+                  {s.cta} <ArrowRight size={17} className="transition group-hover:translate-x-1" />
+                </span>
+              </Link>
+            </motion.div>
+          ))}
         </div>
       </section>
 

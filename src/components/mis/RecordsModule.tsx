@@ -5,7 +5,6 @@ import { AdminCalendar } from "@/components/admin/AdminCalendar";
 import { DoctorsView, RoomsView, SmsView } from "@/components/admin/AdminViews";
 import { Segmented } from "@/components/ui/Segmented";
 import { DEMO_TODAY } from "@/lib/time";
-import { MisTitle } from "./MisShell";
 
 const TABS = [
   { value: "calendar", label: "Календарь записей" },
@@ -24,10 +23,8 @@ export function RecordsModule() {
 
   return (
     <>
-      <MisTitle
-        title="Онлайн-запись"
-        lead="Записи с сайта, из личного кабинета и по телефону. Запись гостя сразу попадает в расписание врача и в карту гостя."
-      />
+      {/* у каждого экрана модуля свой заголовок — здесь только название модуля и вкладки */}
+      <div className="mb-2 text-[12px] font-semibold uppercase tracking-[0.18em] text-teal">Онлайн-запись · записи с сайта, из личного кабинета и по телефону</div>
       <Segmented
         className="mb-8"
         value={tab}

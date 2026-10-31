@@ -45,7 +45,7 @@ export function Egisz() {
       <ChainDiagram />
 
       {/* путь документа */}
-      <div className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-5">
+      <div className="mb-6 grid grid-cols-2 gap-2 sm:grid-cols-3 xl:grid-cols-5">
         {(["draft", "signed", "sent", "registered", "error"] as DocStatus[]).map((s, i) => (
           <button key={s} onClick={() => setFilter(filter === s ? "all" : s)} className={`${card} flex items-center justify-between gap-2 px-4 py-3 text-left transition ${filter === s ? "border-forest ring-2 ring-forest/15" : "hover:border-forest/40"}`}>
             <span>

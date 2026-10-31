@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, BookOpen, Loader2, Send, Sparkles, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -25,6 +26,9 @@ export function Assistant() {
   const seq = useRef(0);
   const bottom = useRef<HTMLDivElement>(null);
   const suggestions = assistantService.suggestions(role?.id);
+  const params = useSearchParams();
+  const preset = params.get("ask");
+  const asked = useRef<string | null>(null);
 
   useEffect(() => {
     bottom.current?.scrollIntoView({ behavior: "smooth", block: "end" });
@@ -40,6 +44,17 @@ export function Assistant() {
     setBusy(false);
     setMessages((m) => [...m, { id: ++seq.current, from: "bot", ...res }]);
   };
+
+  // Демо-сценарий: ?ask=… открывает помощника и сразу задаёт вопрос
+  useEffect(() => {
+    if (!preset || asked.current === preset) return;
+    asked.current = preset;
+    Promise.resolve().then(() => {
+      setOpen(true);
+      ask(preset);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [preset]);
 
   return (
     <>
