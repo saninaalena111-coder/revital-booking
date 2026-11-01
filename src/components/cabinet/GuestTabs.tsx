@@ -60,7 +60,7 @@ export function GuestSchedule({ patient }: { patient: Patient }) {
 
       <div className="scrollbar-none -mx-4 mb-5 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0">
         {days.map((d) => (
-          <button key={d} onClick={() => setDay(d)} className={`flex h-[72px] w-16 shrink-0 flex-col items-center justify-center rounded-2xl border ${d === day ? "border-forest bg-forest text-milk" : "border-line bg-milk text-ink/80"}`}>
+          <button key={d} onClick={() => setDay(d)} className={`flex h-[72px] w-16 shrink-0 flex-col items-center justify-center rounded-2xl border ${d === day ? "border-forest bg-forest text-milk" : "border-white/70 bg-milk/70 text-ink/80 shadow-[var(--shadow-soft)] backdrop-blur-sm"}`}>
             <span className="font-display text-[26px] leading-none">{dayNum(d)}</span>
             <span className={`mt-1 text-[11px] uppercase ${d === day ? "text-sage" : "text-muted"}`}>{d === DEMO_TODAY ? "сегодня" : fmtWeekdayShort(d)}</span>
           </button>

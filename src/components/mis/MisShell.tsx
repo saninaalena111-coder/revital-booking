@@ -114,7 +114,7 @@ export function MisShell({ children }: { children: ReactNode }) {
                 : onDark ? "text-sage hover:bg-milk/5 hover:text-milk" : "text-ink/80 hover:bg-cream"
             }`}
           >
-            {active && onDark && <motion.span layoutId="mis-nav" className="absolute inset-0 rounded-xl bg-milk" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
+            {active && onDark && <motion.span layoutId="mis-nav" className="absolute inset-0 rounded-xl bg-milk shadow-[0_8px_24px_-12px_rgb(0_0_0/0.5)]" transition={{ type: "spring", bounce: 0.18, duration: 0.5 }} />}
             <Icon size={18} strokeWidth={1.5} className="relative shrink-0" />
             <span className="relative">{sec.title}</span>
           </Link>
@@ -137,9 +137,9 @@ export function MisShell({ children }: { children: ReactNode }) {
     );
 
   return (
-    <div style={style} className="min-h-screen bg-cream/50 lg:grid lg:grid-cols-[264px_1fr] print:block print:bg-white">
+    <div style={style} className="min-h-screen bg-cream/30 lg:grid lg:grid-cols-[264px_1fr] print:block print:bg-white">
       {/* боковая панель */}
-      <aside className="sticky top-0 hidden h-screen flex-col overflow-y-auto bg-forest-deep text-milk lg:flex print:hidden">
+      <aside className="sticky top-0 hidden h-screen flex-col overflow-y-auto bg-gradient-to-b from-forest-deep via-forest-deep to-[#173029] text-milk shadow-[8px_0_40px_-24px_rgb(30_56_54/0.6)] lg:flex print:hidden">
         <div className="px-6 pb-5 pt-6">
           <TenantLogo tenant={s.tenant} light subtitle="Для сотрудников" href={home} />
         </div>
@@ -178,7 +178,10 @@ export function MisShell({ children }: { children: ReactNode }) {
         </header>
 
         <div className="px-4 pb-28 pt-6 sm:px-8 sm:pt-8">
-          {allowed ? children : <NoAccess section={section!} home={home} />}
+          {/* каждый экран плавно появляется */}
+          <div key={pathname} className="rise-in">
+            {allowed ? children : <NoAccess section={section!} home={home} />}
+          </div>
         </div>
       </div>
 

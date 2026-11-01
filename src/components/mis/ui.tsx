@@ -1,14 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
+import { animate, AnimatePresence, motion } from "framer-motion";
 import { AlertTriangle, CheckCircle2, Circle, Clock, FileText, Inbox, Loader2, PenLine, Send, XCircle, type LucideIcon } from "lucide-react";
 import { useEffect, useState, type ReactNode } from "react";
 import type { DocStatus, SessionStatus } from "@/lib/types";
 import { DOC_STATUS_LABEL, SESSION_STATUS_LABEL } from "@/services";
 
 /** Карточка рабочего экрана МИС */
-export const card = "rounded-3xl border border-line bg-milk";
+export const card = "surface rounded-3xl";
 
 type Tone = "ok" | "wait" | "info" | "danger" | "muted" | "gold";
 
@@ -88,12 +88,25 @@ export function Loading({ className = "h-64" }: { className?: string }) {
 }
 
 /** Маленький показатель для шапки экрана */
+/** Число плавно «добегает» до значения — показатели оживают при открытии экрана */
+function CountUp({ value }: { value: number }) {
+  const [shown, setShown] = useState(0);
+  useEffect(() => {
+    const controls = animate(0, value, { duration: 0.9, ease: [0.22, 1, 0.36, 1], onUpdate: (v) => setShown(Math.round(v)) });
+    return () => controls.stop();
+  }, [value]);
+  return <>{shown.toLocaleString("ru-RU")}</>;
+}
+
 export function Stat({ label, value, tone }: { label: string; value: ReactNode; tone?: "ok" | "danger" | "gold" }) {
+  // Числа и проценты анимируем, остальное показываем как есть
+  const num = typeof value === "number" ? value : typeof value === "string" && /^\d+%$/.test(value) ? Number(value.slice(0, -1)) : null;
+  const shown = num === null ? value : <><CountUp value={num} />{typeof value === "string" ? "%" : ""}</>;
   return (
     <div className={`${card} px-5 py-4`}>
       <div className="text-[13px] text-muted">{label}</div>
       <div className={`font-display mt-1 text-[32px] leading-none ${tone === "ok" ? "text-ok" : tone === "danger" ? "text-danger" : tone === "gold" ? "text-[#a07a2f]" : "text-forest-deep"}`}>
-        {value}
+        {shown}
       </div>
     </div>
   );

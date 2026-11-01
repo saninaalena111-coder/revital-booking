@@ -14,7 +14,7 @@ export function Segmented<T extends string>({
 }) {
   const id = useId();
   return (
-    <div className={`inline-flex max-w-full overflow-x-auto scrollbar-none rounded-full border border-line bg-cream/70 p-1 ${className}`}>
+    <div className={`inline-flex max-w-full overflow-x-auto scrollbar-none rounded-full border border-white/70 bg-milk/60 p-1 shadow-[var(--shadow-soft)] backdrop-blur-md ${className}`}>
       {options.map((o) => (
         <button
           key={o.value}
@@ -23,7 +23,7 @@ export function Segmented<T extends string>({
           className={`relative shrink-0 rounded-full ${size === "sm" ? "px-3 py-1.5 text-[13px]" : "px-4 py-2 text-sm"} font-medium transition-colors ${value === o.value ? "text-milk" : "text-ink/70 hover:text-forest"}`}
         >
           {value === o.value && (
-            <motion.span layoutId={`seg-${id}`} className="absolute inset-0 rounded-full bg-forest" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />
+            <motion.span layoutId={`seg-${id}`} className="absolute inset-0 rounded-full bg-gradient-to-b from-teal to-forest shadow-[var(--shadow-glow)]" transition={{ type: "spring", bounce: 0.18, duration: 0.5 }} />
           )}
           <span className="relative">{o.label}</span>
         </button>
