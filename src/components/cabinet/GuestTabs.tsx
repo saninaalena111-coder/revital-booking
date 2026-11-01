@@ -6,7 +6,7 @@ import type { MedDocument, Patient } from "@/lib/types";
 import { useService } from "@/hooks/useService";
 import {
   appointmentsService, catalogService, doctorsService, documentsService, mealsService, prescriptionsService, proceduresService,
-  RESTAURANT_LABEL, TOMORROW, visitsService,
+  TOMORROW, visitsService,
 } from "@/services";
 import { REVITAL } from "@/config/tenant";
 import { FREQUENCY_LABEL, plural } from "@/lib/scheduling/planner";
@@ -158,7 +158,7 @@ export function GuestMeals({ patient }: { patient: Patient }) {
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
       <div className="min-w-0">
-        {restaurant === "alacarte" ? (
+        {restaurant?.preorder ? (
           <>
             <h2 className="font-display text-3xl text-forest-deep">Заказ на завтра, {fmtDay(TOMORROW)}</h2>
             <p className="mb-5 mt-1 text-[15.5px] text-muted">
@@ -178,7 +178,7 @@ export function GuestMeals({ patient }: { patient: Patient }) {
           </>
         ) : (
           <div className={`${box} p-6 text-[16px] text-ink/80`}>
-            Вы питаетесь в зале «{RESTAURANT_LABEL.buffet}» — заказывать заранее не нужно. Блюда вашего стола отмечены на раздаче табличкой «{table.short}».
+            Вы питаетесь в зале «{restaurant?.title ?? "Ресторан"}» — заказывать заранее не нужно. Блюда вашего стола отмечены на раздаче табличкой «{table.short}».
           </div>
         )}
       </div>

@@ -56,7 +56,12 @@ export const analyticsService = {
 /* ===================== Сводная панель руководителя (МИС) ===================== */
 
 export interface NetworkSummary {
-  sanatoriums: { id: SanatoriumId; title: string; short: string; rooms: number; occupancyToday: number; occupancy30: number; revenue30: number; living: number; placeholder?: boolean }[];
+  sanatoriums: {
+    id: SanatoriumId; title: string; short: string; kind: "sanatorium" | "spa";
+    rooms: number; occupancyToday: number; occupancy30: number; revenue30: number; living: number;
+    /** СПА-клубы: посещений за 30 дней (демо) */
+    visits30?: number;
+  }[];
   /** Загрузка на 30 дней вперёд, % по дням — для каждого объекта */
   forecast: { dates: ISODate[]; series: { id: SanatoriumId; title: string; values: number[] }[] };
   kpi: { occupancyToday: number; revenue30: number; living: number; appointmentsToday: number; onlineShare: number; proceduresDone: number; proceduresTotal: number };
@@ -84,11 +89,18 @@ export async function networkSummary(scope: SanatoriumId | "all"): Promise<Netwo
       return sum + pastDates.filter((d) => s.from <= d && d < s.to).length * perNight;
     }, 0);
 
+  // СПА-клубы без номеров: посещения и выручка по процедурам — детерминированный демо-расчёт
+  const spaVisits = (id: SanatoriumId) => (id === "spa-moscow" ? 1460 : 980);
+  const SPA_CHECK = 6200;
+
   const ids = REVITAL.sanatoriums.map((s) => s.id).filter((id) => scope === "all" || id === scope);
   const sanatoriums = ids.map((id) => {
     const cfg = REVITAL.sanatoriums.find((s) => s.id === id)!;
+    if (cfg.kind === "spa") {
+      return { id, title: cfg.title, short: cfg.short, kind: cfg.kind, rooms: 0, occupancyToday: 0, occupancy30: 0, living: 0, visits30: spaVisits(id), revenue30: spaVisits(id) * SPA_CHECK };
+    }
     return {
-      id, title: cfg.title, short: cfg.short, placeholder: cfg.placeholder,
+      id, title: cfg.title, short: cfg.short, kind: cfg.kind,
       rooms: rooms.filter((r) => r.sanatoriumId === id).length,
       occupancyToday: occ(id, DEMO_TODAY),
       occupancy30: Math.round(forecastDates.reduce((s, d) => s + occ(id, d), 0) / forecastDates.length),
@@ -99,8 +111,9 @@ export async function networkSummary(scope: SanatoriumId | "all"): Promise<Netwo
 
   const totalRooms = sanatoriums.reduce((s, x) => s + x.rooms, 0);
   const living = sanatoriums.reduce((s, x) => s + x.living, 0);
-  const todayAppointments = ids.includes("gelendzhik") ? db.byDate(DEMO_TODAY).filter((a) => a.kind === "visit" && a.status !== "cancelled") : [];
-  const sessionsToday = ids.includes("gelendzhik") ? tables.sessions.all().filter((s) => s.date === DEMO_TODAY && s.status !== "cancelled") : [];
+  const gelCenter = ids.includes("gelendzhik") || ids.includes("gelendzhik5");
+  const todayAppointments = gelCenter ? db.byDate(DEMO_TODAY).filter((a) => a.kind === "visit" && a.status !== "cancelled") : [];
+  const sessionsToday = gelCenter ? tables.sessions.all().filter((s) => s.date === DEMO_TODAY && s.status !== "cancelled") : [];
 
   // Источники гостей: откуда пришли брони за 60 дней
   const window = stays.filter((s) => ids.includes(s.sanatoriumId) && s.createdAt >= addDays(DEMO_TODAY, -60));
@@ -111,13 +124,13 @@ export async function networkSummary(scope: SanatoriumId | "all"): Promise<Netwo
   // Популярные процедуры за последние 14 дней
   const from14 = addDays(DEMO_TODAY, -14);
   const counts = new Map<string, number>();
-  if (ids.includes("gelendzhik")) {
+  if (gelCenter) {
     for (const s of tables.sessions.all()) if (s.status === "done" && s.date >= from14) counts.set(s.procedureId, (counts.get(s.procedureId) ?? 0) + 1);
   }
   const topProcedures = [...counts].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([id, value]) => ({ label: PROCEDURES.find((p) => p.id === id)!.title, value }));
 
   // Нагрузка врачей Геленджика сегодня: занятое время от смены
-  const doctorsLoad = ids.includes("gelendzhik")
+  const doctorsLoad = gelCenter
     ? DOCTORS.map((d) => {
         const list = todayAppointments.filter((a) => a.doctorId === d.id);
         const busy = db.byDate(DEMO_TODAY).filter((a) => a.doctorId === d.id && a.status !== "cancelled").reduce((s, a) => s + a.end - a.start, 0);
@@ -128,7 +141,7 @@ export async function networkSummary(scope: SanatoriumId | "all"): Promise<Netwo
 
   return {
     sanatoriums,
-    forecast: { dates: forecastDates, series: sanatoriums.map((s) => ({ id: s.id, title: s.short, values: forecastDates.map((d) => occ(s.id, d)) })) },
+    forecast: { dates: forecastDates, series: sanatoriums.filter((s) => s.kind === "sanatorium").map((s) => ({ id: s.id, title: s.short, values: forecastDates.map((d) => occ(s.id, d)) })) },
     kpi: {
       occupancyToday: totalRooms ? Math.round((living / totalRooms) * 100) : 0,
       revenue30: sanatoriums.reduce((s, x) => s + x.revenue30, 0),

@@ -40,7 +40,7 @@ export function Bookings() {
     <>
       <MisTitle
         title="Брони и путёвки"
-        lead={`${sanatorium?.title ?? "Все санатории"}: заезды на ближайшие 30 дней. Нажмите на бронь, чтобы открыть карточку.`}
+        lead={`${sanatorium?.title ?? "Вся сеть"}: заезды на ближайшие 30 дней. Нажмите на бронь, чтобы открыть карточку.`}
         right={
           <>
             <ComingSoonButton feature="export" variant="ghost"><Download size={16} /> Выгрузить</ComingSoonButton>
@@ -76,7 +76,7 @@ export function Bookings() {
       {!data ? (
         <Loading />
       ) : !rows.length ? (
-        <EmptyState icon={Ticket} title="Броней не нашли" text={sanatorium?.placeholder ? "Данные этого объекта ещё не загружены." : "Измените фильтр или создайте новую бронь."} />
+        <EmptyState icon={Ticket} title="Броней не нашли" text={sanatorium?.kind === "spa" ? "В СПА-клубе нет номеров — гости приходят на процедуры по записи." : "Измените фильтр или создайте новую бронь."} />
       ) : (
         <ul className={`${card} divide-y divide-line overflow-hidden`}>
           {rows.slice(0, 80).map((s) => {

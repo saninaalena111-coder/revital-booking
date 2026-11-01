@@ -10,7 +10,7 @@ import { dayNum, DEMO_TODAY, fmtDay, fmtWeekdayShort } from "@/lib/time";
 import { Button } from "@/components/ui/Button";
 import { Segmented } from "@/components/ui/Segmented";
 import { MisTitle } from "../MisShell";
-import { card, Loading, Stat, useToast } from "../ui";
+import { card, EmptyState, Loading, Stat, useToast } from "../ui";
 import { NewStayModal, StayModal, StayStatusPill, type NewStayDraft } from "./StayModals";
 
 const CELL = 40;
@@ -61,6 +61,15 @@ export function Stays() {
   const rows = useMemo(() => grid?.rows.filter((r) => building === "all" || r.room.building === building) ?? [], [grid, building]);
   const today = grid?.rows.map((r) => r.cells[0]);
 
+  if (sanatorium.kind === "spa") {
+    return (
+      <>
+        <MisTitle title="Размещение" lead="Заезды и выезды сегодня и шахматка номеров." />
+        <EmptyState icon={BedDouble} title="В СПА-клубе нет номеров" text="Гости приходят на процедуры по записи. Выберите санаторий в шапке, чтобы открыть шахматку." />
+      </>
+    );
+  }
+
   return (
     <>
       <MisTitle
@@ -69,7 +78,7 @@ export function Stays() {
         right={<Button onClick={() => setDraft({})}><CalendarPlus size={17} /> Новая бронь</Button>}
       />
 
-      {sanatoriumId === "all" && <p className="-mt-4 mb-5 text-[14px] text-muted">Выбраны все санатории — показываем {sanatorium.title}. Другой объект выберите в шапке.</p>}
+      {sanatoriumId === "all" && <p className="-mt-4 mb-5 text-[14px] text-muted">Выбрана вся сеть — показываем {sanatorium.title}. Другой объект выберите в шапке.</p>}
 
       {today && (
         <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-5">

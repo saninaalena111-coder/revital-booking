@@ -17,6 +17,7 @@ import type {
 import { REVITAL } from "@/config/tenant";
 import { addDays, DEMO_NOW, DEMO_TODAY, fmtDay, fmtTime, nightsBetween, toMin } from "@/lib/time";
 import { planCourse, type Interval } from "@/lib/scheduling/planner";
+import { stayPrice } from "@/lib/pricing";
 import { HANDCRAFTED } from "@/mock/appointments";
 import { DIET_TABLES, DISHES, ICD10, MED_ROOMS, PROCEDURES, PROGRAMS } from "./catalog";
 import { rng, type Rng } from "./random";
@@ -219,7 +220,8 @@ function build(): Dataset {
   const PROGRAM_WEIGHTS = [["base", 30], ["msk", 20], ["antistress", 15], ["detox", 12], ["covid", 10], ["aqua", 13]] as const;
   const SOURCES = [["Сайт", 30], ["Отдел бронирования", 25], ["Повторный гость", 15], ["Туроператор", 12], ["Яндекс Директ", 8], ["Telegram", 5], ["Instagram", 5]] as const;
 
-  const gelRooms = rooms.filter((x) => x.sanatoriumId === "gelendzhik" && !x.repair);
+  // Два санатория Геленджика: гости обоих лечатся в общем медицинском центре на Маячной
+  const gelRooms = rooms.filter((x) => (x.sanatoriumId === "gelendzhik" || x.sanatoriumId === "gelendzhik5") && !x.repair);
   const placeStay = (
     sanatoriumId: SanatoriumId, patientId: string | null, guestName: string, from: ISODate, nights: number, programId: string,
     preferRoom?: string, guests = 1,
@@ -230,7 +232,9 @@ function build(): Dataset {
     const room = candidates.find((x) => occ.free(x.id, from, to));
     if (!room) return null;
     occ.add(room.id, from, to);
-    const price = program(programId).pricePerNightRub * nights * guests;
+    const cfg = REVITAL.sanatoriums.find((x) => x.id === room.sanatoriumId)!;
+    const roomPrice = cfg.roomTypes.find((t) => t.id === room.typeId)!.priceRub;
+    const price = stayPrice(roomPrice, program(programId).pricePerNightRub, nights, guests);
     const status = stayStatus(from, to);
     const payment: PaymentStatus = status === "booked" ? r.weighted([["paid", 4], ["partial", 4], ["unpaid", 2]]) : r.chance(0.9) ? "paid" : "partial";
     const stay: Stay = {
@@ -259,7 +263,9 @@ function build(): Dataset {
     const room = rooms.find((x) => x.id === stay.hotelRoomId)!;
     p.stayId = stay.id;
     p.programId = stay.programId;
-    p.stay = { building: `Ревиталь Парк Геленджик, ${room.building.toLowerCase()}`, roomNumber: room.number, from: stay.from, to: stay.to };
+    p.sanatoriumId = stay.sanatoriumId;
+    const title = REVITAL.sanatoriums.find((x) => x.id === stay.sanatoriumId)!.title;
+    p.stay = { building: `${title}, ${room.building.toLowerCase()}`, roomNumber: room.number, from: stay.from, to: stay.to };
   };
 
   /* --- 1. Ручные пациенты --- */
@@ -301,7 +307,9 @@ function build(): Dataset {
       else if (i < 5) from = TODAY; // заезды сегодня
       else if (i < 9) from = addDays(TODAY, -nights); // выезды сегодня
       else from = addDays(TODAY, -r.int(1, nights - 1));
-      const stay = placeStay("gelendzhik", p.id, shortName(p), from, nights, programId, undefined, r.chance(0.35) ? 2 : 1);
+      // Примерно каждый шестой гость живёт в пятизвёздочном санатории
+      const san: SanatoriumId = i % 6 === 3 ? "gelendzhik5" : "gelendzhik";
+      const stay = placeStay(san, p.id, shortName(p), from, nights, programId, undefined, r.chance(0.35) ? 2 : 1);
       if (stay) attachStay(p, stay);
       // Гости, заехавшие сегодня, ещё не прошли первичный приём
       if (from === TODAY) awaiting.add(p.id);
@@ -340,7 +348,7 @@ function build(): Dataset {
   fillRooms("gelendzhik", 0.45);
   fillRooms("sochi", 0.4);
   fillRooms("balashikha", 0.42);
-  fillRooms("fourth", 0.65);
+  fillRooms("gelendzhik5", 0.4);
 
   /* --- 4. Приёмы, назначения и расписание процедур --- */
   const visits: Visit[] = [];
@@ -500,7 +508,8 @@ function build(): Dataset {
     const stay = stays.find((s) => s.id === p.stayId);
     if (!stay) continue;
     const room = gelRooms.find((x) => x.id === stay.hotelRoomId);
-    if (!room || room.building !== "Корпус 4") continue;
+    // Заказ на завтра делают гости ресторана «А-ля карт» (корпус 4) и пятизвёздочного санатория
+    if (!room || !(room.building === "Корпус 4" || room.sanatoriumId === "gelendzhik5")) continue;
     for (const date of [TODAY, tomorrow]) {
       if (!(stay.from <= date && date < stay.to)) continue;
       if (date === tomorrow && (p.id === "p-anna" || r.chance(0.35))) continue; // не все заказали на завтра

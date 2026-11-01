@@ -226,7 +226,7 @@ function SanatoriumSwitch() {
     return () => document.removeEventListener("mousedown", close);
   }, [open]);
 
-  const options = [{ id: "all" as const, title: "Все санатории", sub: `Сеть «${s.tenant.brand.name}»` }, ...s.tenant.sanatoriums.map((x) => ({ id: x.id, title: x.title, sub: x.placeholder ? "Данные уточняются" : x.city }))];
+  const options = [{ id: "all" as const, title: "Вся сеть", sub: `${s.tenant.brand.name}: 4 санатория и 2 СПА-клуба` }, ...s.tenant.sanatoriums.map((x) => ({ id: x.id, title: x.title, sub: x.kind === "spa" ? `${x.city} · СПА-клуб, без проживания` : `${x.city} · ${x.stars}★` }))];
   const current = options.find((o) => o.id === s.sanatoriumId) ?? options[0];
 
   return (

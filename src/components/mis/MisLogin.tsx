@@ -46,8 +46,8 @@ export function MisLogin() {
           {s.tenant.sanatoriums.map((x) => (
             <li key={x.id} className="flex items-center gap-2.5">
               <MapPin size={15} className="shrink-0 text-gold" />
-              <span className="text-milk">{x.title}</span>
-              {x.placeholder && <span className="text-sage/70">· уточняется</span>}
+              <span className="text-milk">{x.kind === "spa" ? x.title.replace("СПА-клуб Ревиталь ", "СПА-клуб ") : x.title.replace(/ \d★$/, "")}</span>
+              <span className="text-sage/70">· {x.kind === "spa" ? "СПА-клуб" : `${x.stars}★`}</span>
             </li>
           ))}
         </ul>

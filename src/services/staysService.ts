@@ -11,6 +11,7 @@ import type { HotelRoom, ISODate, PaymentStatus, RoomDayState, SanatoriumId, Sta
 import { REVITAL } from "@/config/tenant";
 import { hotelRooms, tables } from "@/mock/mis/store";
 import { addDays, DEMO_TODAY, nightsBetween } from "@/lib/time";
+import { stayPrice } from "@/lib/pricing";
 import { catalogService } from "./catalogService";
 import { auditService } from "./auditService";
 import { latency, uid } from "./config";
@@ -74,6 +75,11 @@ export interface NewStayInput {
 }
 
 export const staysService = {
+  /** Цена номера за ночь «от» — по данным сайта сети */
+  roomPrice(room: HotelRoom) {
+    return REVITAL.sanatoriums.find((s) => s.id === room.sanatoriumId)!.roomTypes.find((t) => t.id === room.typeId)?.priceRub ?? 0;
+  },
+
   roomTypeTitle(room: HotelRoom) {
     const san = REVITAL.sanatoriums.find((s) => s.id === room.sanatoriumId)!;
     return san.roomTypes.find((t) => t.id === room.typeId)?.title ?? "Номер";
@@ -168,7 +174,9 @@ export const staysService = {
   async create(input: NewStayInput): Promise<Stay> {
     await latency(700);
     const nights = nightsBetween(input.from, input.to);
-    const amountRub = catalogService.program(input.programId).pricePerNightRub * nights * input.guests;
+    const room = hotelRooms().find((r) => r.id === input.hotelRoomId)!;
+    const roomPrice = REVITAL.sanatoriums.find((x) => x.id === room.sanatoriumId)!.roomTypes.find((t) => t.id === room.typeId)!.priceRub;
+    const amountRub = stayPrice(roomPrice, catalogService.program(input.programId).pricePerNightRub, nights, input.guests);
     const stay: Stay = {
       id: uid("st"),
       sanatoriumId: input.sanatoriumId, patientId: null, guestName: input.guestName, hotelRoomId: input.hotelRoomId,

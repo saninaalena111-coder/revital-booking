@@ -190,7 +190,7 @@ export interface Slot {
  * МИС: сеть санаториев, персонал, роли.
  * ================================================================ */
 
-export type SanatoriumId = "gelendzhik" | "sochi" | "balashikha" | "fourth";
+export type SanatoriumId = "gelendzhik" | "gelendzhik5" | "sochi" | "balashikha" | "spa-moscow" | "spa-odintsovo";
 
 export type RoleId = "doctor" | "nurse" | "reception" | "booking" | "restaurant" | "manager" | "marketer" | "sysadmin";
 
@@ -294,6 +294,7 @@ export interface Program {
   short: string;
   description: string;
   minNights: number;
+  /** Лечение по программе: за одного гостя в ночь, ₽ (к цене номера) */
   pricePerNightRub: number;
   includes: string[];
   /** Процедуры, которые обычно назначает врач в рамках программы */

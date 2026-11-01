@@ -9,6 +9,7 @@ import { useSession } from "@/hooks/useSession";
 import { catalogService, PAYMENT_LABEL, staysService, STAY_STATUS_LABEL } from "@/services";
 import { addDays, DEMO_TODAY, fmtDay, nightsBetween } from "@/lib/time";
 import { plural } from "@/lib/scheduling/planner";
+import { stayPrice } from "@/lib/pricing";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { ComingSoonButton } from "../ComingSoon";
@@ -135,7 +136,8 @@ function NewStayForm({ draft, onClose, onDone }: { draft: NewStayDraft; onClose:
   const rooms = free?.filter((r) => typeId === "any" || r.typeId === typeId) ?? [];
   const picked = free?.find((r) => r.id === roomId);
   const program = catalogService.program(programId);
-  const total = program.pricePerNightRub * nights * guests;
+  const roomPrice = picked ? staysService.roomPrice(picked) : 0;
+  const total = stayPrice(roomPrice, program.pricePerNightRub, nights, guests);
   const ready = name.trim().length > 2 && phone.replace(/\D/g, "").length >= 10 && picked;
 
   const save = async () => {
@@ -205,7 +207,9 @@ function NewStayForm({ draft, onClose, onDone }: { draft: NewStayDraft; onClose:
           {picked ? <>Номер <b>{picked.number}</b> · {staysService.roomTypeTitle(picked)} · </> : "Выберите номер · "}
           {fmtDay(from)} — {fmtDay(to)}
           <div className="font-display mt-1 text-[26px] text-forest-deep">{rub(total)}</div>
-          <div className="text-[12.5px] text-muted">{rub(program.pricePerNightRub)} за ночь × {nights} × {guests} (демо-цены)</div>
+          <div className="text-[12.5px] text-muted">
+            {picked ? `Номер ${rub(roomPrice)} за ночь (цена сайта «от»)` : "Цена номера — после выбора"} + лечение {rub(program.pricePerNightRub)} за гостя в ночь × {nights} ноч.
+          </div>
         </div>
         <Button size="lg" onClick={save} disabled={!ready || busy}>
           {busy ? <Loader2 size={18} className="animate-spin" /> : <CalendarPlus size={18} />} Создать бронь

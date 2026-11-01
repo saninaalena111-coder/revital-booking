@@ -5,7 +5,7 @@ import { useState } from "react";
 import type { ISODate, Minutes } from "@/lib/types";
 import { useService } from "@/hooks/useService";
 import { useSession } from "@/hooks/useSession";
-import { proceduresService, type SessionRow } from "@/services";
+import { catalogService, proceduresService, type SessionRow } from "@/services";
 import { addDays, dayNum, DEMO_NOW, DEMO_TODAY, fmtRange, fmtTime, fmtWeekdayShort, toMin } from "@/lib/time";
 import { GUEST_MEALS } from "@/lib/scheduling/planner";
 import { LinkButton } from "@/components/ui/Button";
@@ -39,7 +39,9 @@ export function RoomsLoad() {
   const { sanatoriumId, sanatorium } = useSession();
   const [date, setDate] = useState<ISODate>(DEMO_TODAY);
   const [open, setOpen] = useState<SessionRow | null>(null);
+  // У двух санаториев Геленджика общий медицинский центр — его кабинеты и показываем
   const san = sanatoriumId === "all" ? "gelendzhik" : sanatoriumId;
+  const hasRooms = catalogService.medRooms(san).length > 0;
   const { data } = useService(() => proceduresService.roomsLoad(date, san), [date, san]);
   const pct = (m: Minutes) => ((m - FROM) / (TO - FROM)) * 100;
   const hours = Array.from({ length: (TO - FROM) / 60 + 1 }, (_, i) => FROM + i * 60);
@@ -56,7 +58,7 @@ export function RoomsLoad() {
         ))}
       </div>
 
-      {sanatoriumId !== "gelendzhik" && sanatoriumId !== "all" ? (
+      {!hasRooms ? (
         <EmptyState title="Кабинеты объекта ещё не заведены" text={`Подробное расписание кабинетов в демо есть для Геленджика. ${sanatorium?.title ?? ""} подключается так же.`} />
       ) : !data ? (
         <Loading className="h-[480px]" />
