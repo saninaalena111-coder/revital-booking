@@ -196,8 +196,11 @@ export const documentsService = {
   },
 
   /** Выписной эпикриз из данных карты — одной кнопкой */
+  /** Выписка гостя: одна на проживание. Подписанную не пересоздаём, черновик обновляем */
   async createDischarge(patientId: string, doctorId: string): Promise<MedDocument> {
     await latency(600);
+    const existing = tables.documents.all().find((d) => d.patientId === patientId && d.kind === "discharge");
+    if (existing && existing.status !== "draft") return existing;
     const patient = tables.patients.find(patientId)!;
     const stay = patient.stayId ? tables.stays.find(patient.stayId) : undefined;
     const visits = tables.visits.all().filter((v) => v.patientId === patientId && v.status === "done");
@@ -221,6 +224,11 @@ export const documentsService = {
         { heading: "Рекомендации", text: "Продолжить лечебную гимнастику дома. Наблюдение терапевта по месту жительства. Повторный курс через 6–12 месяцев." },
       ],
     };
+    if (existing) {
+      tables.documents.patch(existing.id, { body: doc.body, date: DEMO_TODAY, doctorId });
+      auditService.log("edit", "Обновлён черновик выписного эпикриза", patientId);
+      return tables.documents.find(existing.id)!;
+    }
     tables.documents.insert(doc);
     auditService.log("edit", "Сформирован выписной эпикриз", patientId);
     return doc;

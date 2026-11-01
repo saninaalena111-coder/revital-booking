@@ -57,6 +57,9 @@ function cellFor(room: HotelRoom, date: ISODate, stays: Stay[]): GridCell {
   if (room.repair) return { state: "repair" };
   const stay = stays.find((s) => s.from <= date && date < s.to);
   if (stay) return { state: stay.status === "checked_in" ? "living" : "booked", stay, starts: stay.from === date };
+  // Сегодня выезжает, но ещё не выселен — номер занят до выезда (до 12:00)
+  const leaving = stays.find((s) => s.to === date && s.status === "checked_in");
+  if (leaving && date === DEMO_TODAY) return { state: "living", stay: leaving };
   // В день выезда после выселения номер уходит на уборку
   const left = stays.find((s) => s.to === date && s.status === "checked_out");
   if (left && date === DEMO_TODAY) return { state: "cleaning", stay: left };

@@ -35,7 +35,7 @@ export function Cabinet() {
           <h1 className="font-display mt-3 text-5xl text-forest-deep sm:text-6xl">Добрый день{patient ? `, ${patient.firstName}` : ""}</h1>
           {patient?.stay && (
             <div className="mt-4 flex flex-wrap gap-2">
-              <Badge tone="sage">Гость Ревиталь Парк</Badge>
+              <Badge tone="sage">Гость · {patient.stay.building.split(",")[0]}</Badge>
               <Badge tone="outline">Номер {patient.stay.roomNumber}</Badge>
               <Badge tone="outline">
                 Проживание {dayNum(patient.stay.from)}–{fmtDay(patient.stay.to)}

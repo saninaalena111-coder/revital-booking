@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowRight, Bath, CalendarDays, Check, Footprints, Hand, Hotel, Loader2, Lock, Plane, Search, Stethoscope, Waves,
@@ -9,8 +10,8 @@ import type { ISODate, Patient } from "@/lib/types";
 import { Button } from "@/components/ui/Button";
 import { DirectionIcon } from "@/components/ui/DirectionIcon";
 import { useService } from "@/hooks/useService";
-import { doctorsService, patientsService } from "@/services";
-import { addDays, dayNum, daysBetween, DEMO_TODAY, fmtDay, fmtWeekdayShort, parseDate, weekday } from "@/lib/time";
+import { doctorsService, patientsService, prescriptionsService, visitsService } from "@/services";
+import { addDays, dayNum, daysBetween, DEMO_TODAY, fmtDay, fmtTime, fmtWeekdayShort, parseDate, relativeDay, weekday } from "@/lib/time";
 import { StepTitle, type Path } from "./BookingFlow";
 
 /* ---------------- ШАГ 1 ---------------- */
@@ -117,8 +118,20 @@ const LOCKED = [
   { icon: Waves, label: "Физиотерапия" },
 ];
 
-export function GuestFoundStep({ patient, onNext }: { patient: Patient; onNext: () => void }) {
+export function GuestFoundStep({
+  patient, onNext, onRepeat, onSpecialist,
+}: {
+  patient: Patient;
+  onNext: () => void;
+  onRepeat: () => void;
+  onSpecialist: () => void;
+}) {
   const stay = patient.stay!;
+  // Сверяемся с МИС: прошёл ли гость первичный приём и назначен ли курс
+  const { data: med } = useService(async () => {
+    const [visits, course] = await Promise.all([visitsService.forPatient(patient.id), prescriptionsService.forPatient(patient.id)]);
+    return { primaryDone: visits.some((v) => v.status === "done"), course };
+  }, [patient.id]);
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.15fr_1fr]">
       <motion.div initial={{ scale: 0.97, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="relative overflow-hidden rounded-[32px] bg-forest-deep p-7 text-milk sm:p-9">
@@ -152,6 +165,11 @@ export function GuestFoundStep({ patient, onNext }: { patient: Patient; onNext: 
         </div>
       </motion.div>
 
+      {!med ? (
+        <div className="grid place-items-center text-muted"><Loader2 className="animate-spin" /></div>
+      ) : med.primaryDone ? (
+        <CourseInfo course={med.course} onRepeat={onRepeat} onSpecialist={onSpecialist} />
+      ) : (
       <div className="flex flex-col">
         <StepTitle eyebrow="Первый шаг лечения" title="Приём терапевта" />
         <p className="-mt-4 text-[15.5px] leading-relaxed text-muted">
@@ -177,6 +195,48 @@ export function GuestFoundStep({ patient, onNext }: { patient: Patient; onNext: 
           </div>
         </div>
       </div>
+      )}
+    </div>
+  );
+}
+
+/** Первичный приём уже пройден: показываем назначенный курс и дальнейшие записи */
+function CourseInfo({
+  course, onRepeat, onSpecialist,
+}: {
+  course: Awaited<ReturnType<typeof prescriptionsService.forPatient>>;
+  onRepeat: () => void;
+  onSpecialist: () => void;
+}) {
+  const next = course.flatMap((c) => (c.next ? [{ title: c.procedure.title, s: c.next }] : [])).sort((a, b) => a.s.date.localeCompare(b.s.date) || a.s.start - b.s.start)[0];
+  return (
+    <div className="flex flex-col">
+      <StepTitle eyebrow="Лечение уже идёт" title="Ваш курс назначен врачом" />
+      <p className="-mt-4 text-[15.5px] leading-relaxed text-muted">
+        Процедуры уже разложены по расписанию — их время в личном кабинете. Здесь можно записаться на повторный приём или к другому специалисту.
+      </p>
+      {course.length > 0 && (
+        <ul className="mt-5 space-y-2">
+          {course.slice(0, 4).map((c) => (
+            <li key={c.prescription.id} className="flex items-center justify-between gap-3 rounded-2xl border border-line bg-milk px-4 py-2.5 text-[14.5px]">
+              <span className="text-ink/85">{c.procedure.title}</span>
+              <span className="shrink-0 tabular-nums text-muted"><b className="text-forest-deep">{c.done}</b> из {c.total}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {next && (
+        <p className="mt-3 text-[14px] text-forest">Ближайшая процедура: {next.title.toLowerCase()} — {relativeDay(next.s.date)} в {fmtTime(next.s.start)}</p>
+      )}
+      <div className="mt-6 flex flex-wrap gap-3">
+        <Button size="lg" onClick={onRepeat}>
+          <Stethoscope size={18} /> Повторный приём терапевта
+        </Button>
+        <Button size="lg" variant="secondary" onClick={onSpecialist}>
+          Другой специалист <ArrowRight size={17} />
+        </Button>
+      </div>
+      <Link href="/cabinet" className="mt-4 text-[14px] text-teal underline-offset-4 hover:underline">Открыть моё расписание в личном кабинете</Link>
     </div>
   );
 }

@@ -163,8 +163,10 @@ export function MisShell({ children }: { children: ReactNode }) {
               >
                 <Menu size={19} />
               </button>
-              <div className="hidden text-sm text-muted xl:block">
-                <span className="capitalize">{fmtWeekdayLong(DEMO_TODAY)}</span>, {fmtDay(DEMO_TODAY)}
+              {/* Демо-день фиксирован, чтобы все сценарии показывали одно и то же */}
+              <div className="hidden items-center gap-2 text-sm text-muted xl:flex" title="Демо-день: все сценарии показаны на 12 октября 2026, 10:40">
+                <span><span className="capitalize">{fmtWeekdayLong(DEMO_TODAY)}</span>, {fmtDay(DEMO_TODAY)}</span>
+                <span className="rounded-full bg-gold-soft px-2 py-0.5 text-[11px] font-medium text-[#7a5a1c]">демо-день</span>
               </div>
               <SanatoriumSwitch />
             </div>
