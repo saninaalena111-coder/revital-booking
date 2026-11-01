@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  BarChart3, BedDouble, CalendarClock, CalendarHeart, Check, ChevronDown, DoorOpen, FileCheck2, LifeBuoy, Loader2,
+  BarChart3, BedDouble, CalendarClock, CalendarHeart, Check, ChevronDown, ClipboardCheck, DoorOpen, FileCheck2, LifeBuoy, Loader2,
   LogOut, Megaphone, Menu, ShieldCheck, Sun, Syringe, Ticket, UsersRound, UtensilsCrossed, X, type LucideIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
@@ -32,6 +32,7 @@ export const SECTION_ICONS: Record<SectionId, LucideIcon> = {
   sources: Megaphone,
   admin: ShieldCheck,
   help: LifeBuoy,
+  reports: ClipboardCheck,
 };
 
 /** Внутренние экраны, у которых нет своего пункта меню, относятся к разделу */

@@ -24,3 +24,5 @@ export type { GridRow, GridCell } from "./staysService";
 export type { NetworkSummary } from "./analyticsService";
 export { assistantService } from "./assistantService";
 export type { AssistantAnswer } from "./assistantService";
+export { reportsService } from "./reportsService";
+export type { Period, QualityReport } from "./reportsService";

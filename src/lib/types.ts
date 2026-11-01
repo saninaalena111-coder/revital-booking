@@ -192,7 +192,7 @@ export interface Slot {
 
 export type SanatoriumId = "gelendzhik" | "gelendzhik5" | "sochi" | "balashikha" | "spa-moscow" | "spa-odintsovo";
 
-export type RoleId = "doctor" | "nurse" | "reception" | "booking" | "restaurant" | "manager" | "marketer" | "sysadmin";
+export type RoleId = "chief" | "doctor" | "nurse" | "reception" | "booking" | "restaurant" | "manager" | "marketer" | "sysadmin";
 
 export interface Staff {
   id: string;

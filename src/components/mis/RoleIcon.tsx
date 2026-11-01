@@ -1,5 +1,5 @@
 import {
-  BarChart3, CalendarRange, ConciergeBell, Megaphone, ShieldCheck, Stethoscope, Syringe, UtensilsCrossed,
+  BarChart3, CalendarRange, ClipboardCheck, ConciergeBell, Megaphone, ShieldCheck, Stethoscope, Syringe, UtensilsCrossed,
   type LucideProps,
 } from "lucide-react";
 import type { Role } from "@/config/roles";
@@ -13,6 +13,7 @@ const ICONS = {
   chart: BarChart3,
   megaphone: Megaphone,
   shield: ShieldCheck,
+  clipboard: ClipboardCheck,
 } satisfies Record<Role["icon"], unknown>;
 
 export function RoleIcon({ icon, ...props }: { icon: Role["icon"] } & LucideProps) {

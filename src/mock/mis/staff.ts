@@ -18,6 +18,8 @@ const s = (
 };
 
 export const STAFF: Staff[] = [
+  // Главный врач медицинского центра Геленджика (оба санатория на Маячной)
+  s("st-chief", "gelendzhik", "chief", "Голованова Ирина Сергеевна", "Главный врач"),
   // Геленджик — врачи (карточки врачей — src/mock/catalog.ts)
   s("st-orlova", "gelendzhik", "doctor", "Орлова Мария Ивановна", "Терапевт, косметолог", { doctorId: "orlova" }),
   s("st-volkova", "gelendzhik", "doctor", "Волкова Зинаида Петровна", "Терапевт, физиотерапевт", { doctorId: "volkova" }),
@@ -57,6 +59,7 @@ export const STAFF: Staff[] = [
 
 /** Под кем входим в демо для каждой роли */
 export const DEMO_USER: Record<RoleId, string> = {
+  chief: "st-chief",
   doctor: "st-orlova",
   nurse: "st-kravchenko",
   reception: "st-gordeeva",
