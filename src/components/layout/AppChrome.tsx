@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { MotionConfig } from "framer-motion";
 import { useEffect, type ReactNode } from "react";
 import { db } from "@/mock/db";
 import { sessionService } from "@/services";
@@ -18,12 +19,13 @@ export function AppChrome({ children }: { children: ReactNode }) {
     sessionService.hydrate();
   }, []);
 
+  // Анимации уважают системную настройку «Уменьшить движение»
   return (
-    <>
+    <MotionConfig reducedMotion="user">
       {!admin && <SiteHeader />}
       <main className="flex-1">{children}</main>
       {!admin && <SiteFooter />}
       <DemoNavigator />
-    </>
+    </MotionConfig>
   );
 }

@@ -35,7 +35,7 @@ export function PatientsList() {
     <>
       <MisTitle
         title="Гости и пациенты"
-        lead={`${sanatorium?.title ?? "Все санатории"}: проживающие гости, будущие гости и амбулаторные пациенты. Нажмите на строку, чтобы открыть карту.`}
+        lead={`${sanatorium?.title ?? "Вся сеть"}: проживающие гости, будущие гости и амбулаторные пациенты. Нажмите на строку, чтобы открыть карту.`}
       />
 
       <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
@@ -65,7 +65,7 @@ export function PatientsList() {
           <UsersRound size={26} strokeWidth={1.5} className="mx-auto text-muted" />
           <div className="mt-3 text-lg font-semibold text-forest-deep">{q ? "Никого не нашли" : "Здесь пока никого нет"}</div>
           <p className="mt-1 text-[15px] text-muted">
-            {q ? "Проверьте фамилию или номер телефона." : sanatorium?.placeholder ? "Данные этого объекта ещё не загружены." : "Выберите другой санаторий или фильтр."}
+            {q ? "Проверьте фамилию или номер телефона." : sanatorium?.kind === "spa" ? "Клиенты СПА-клуба ведутся в системе так же; в демо подробная база заведена для Геленджика." : "Выберите другой санаторий или фильтр."}
           </p>
         </div>
       )}

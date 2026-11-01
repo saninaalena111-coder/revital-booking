@@ -5,12 +5,12 @@ type Variant = "primary" | "secondary" | "ghost" | "gold" | "light";
 type Size = "sm" | "md" | "lg";
 
 const base =
-  "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-300 disabled:opacity-40 disabled:pointer-events-none select-none whitespace-nowrap";
+  "inline-flex items-center justify-center gap-2 rounded-full font-medium transition-all duration-300 ease-out active:scale-[0.98] disabled:opacity-40 disabled:pointer-events-none select-none whitespace-nowrap";
 const variants: Record<Variant, string> = {
-  primary: "bg-forest text-milk hover:bg-forest-deep shadow-[0_8px_24px_-12px_rgb(30_56_54/0.6)]",
-  secondary: "border border-forest/25 text-forest hover:border-forest hover:bg-forest/[0.04]",
+  primary: "bg-gradient-to-b from-teal to-forest text-milk shadow-[var(--shadow-glow)] hover:-translate-y-0.5 hover:from-forest hover:to-forest-deep hover:shadow-[0_16px_34px_-14px_rgb(47_84_81/0.6)]",
+  secondary: "border border-forest/20 bg-milk/60 text-forest backdrop-blur-sm hover:-translate-y-0.5 hover:border-forest/50 hover:bg-milk hover:shadow-[var(--shadow-soft)]",
   ghost: "text-forest hover:bg-forest/[0.06]",
-  gold: "bg-gold text-forest-deep hover:bg-[#c79f57]",
+  gold: "bg-gradient-to-b from-[#dcbb7c] to-gold text-forest-deep shadow-[0_10px_26px_-12px_rgb(208_171_103/0.8)] hover:-translate-y-0.5",
   light: "bg-milk/90 text-forest-deep hover:bg-milk",
 };
 const sizes: Record<Size, string> = {

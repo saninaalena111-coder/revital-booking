@@ -7,7 +7,7 @@ import { useMemo, useState } from "react";
 import type { Appointment, Attribution, ISODate, Patient, Slot } from "@/lib/types";
 import { attributionFrom } from "@/lib/attribution";
 import { addDays, daysBetween, DEMO_TODAY } from "@/lib/time";
-import { GUEST_PRIMARY_SERVICE_ID, THERAPIST_IDS } from "@/lib/rules";
+import { GUEST_PRIMARY_SERVICE_ID, GUEST_REPEAT_SERVICE_ID, THERAPIST_IDS } from "@/lib/rules";
 import { StatusStep, GuestIdStep, GuestFoundStep, FutureIntroStep, FutureDateStep, DirectionStep, ServiceStep } from "./Steps";
 import { DoctorStep } from "./DoctorStep";
 import { SlotStep } from "./SlotStep";
@@ -29,6 +29,8 @@ export interface FlowState {
   serviceId?: string;
   slot?: Slot;
   appointment?: Appointment;
+  /** Гость, у которого первичный приём уже был: повторный приём или другой специалист */
+  guestNeed?: "repeat" | "specialist";
 }
 
 const PROGRESS: Record<Step, number> = {
@@ -72,7 +74,8 @@ export function BookingFlow() {
         ? daysBetween(s.arrival, addDays(s.arrival, 2))
         : daysBetween(DEMO_TODAY, addDays(DEMO_TODAY, 13));
 
-  const serviceId = s.path === "outpatient" ? s.serviceId : GUEST_PRIMARY_SERVICE_ID;
+  const byDirection = s.path === "outpatient" || s.guestNeed === "specialist";
+  const serviceId = byDirection ? s.serviceId : s.guestNeed === "repeat" ? GUEST_REPEAT_SERVICE_ID : GUEST_PRIMARY_SERVICE_ID;
   const doctorIds = s.doctorId === "any" ? THERAPIST_IDS : s.doctorId ? [s.doctorId] : [];
 
   const progress = PROGRESS[step];
@@ -121,7 +124,14 @@ export function BookingFlow() {
             />
           )}
           {step === "guest-id" && <GuestIdStep onFound={(patient) => go("guest-found", { patient, path: "guest" })} />}
-          {step === "guest-found" && s.patient && <GuestFoundStep patient={s.patient} onNext={() => go("doctor")} />}
+          {step === "guest-found" && s.patient && (
+            <GuestFoundStep
+              patient={s.patient}
+              onNext={() => go("doctor", { guestNeed: undefined })}
+              onRepeat={() => go("doctor", { guestNeed: "repeat" })}
+              onSpecialist={() => go("direction", { guestNeed: "specialist" })}
+            />
+          )}
           {step === "future-intro" && (
             <FutureIntroStep onPlan={() => go("future-date", { path: "future" })} onOutpatient={() => go("direction", { path: "outpatient" })} />
           )}
@@ -129,11 +139,11 @@ export function BookingFlow() {
           {step === "direction" && <DirectionStep onPick={(directionId) => go("doctor", { directionId, doctorId: undefined, serviceId: undefined })} />}
           {step === "doctor" && (
             <DoctorStep
-              mode={s.path === "outpatient" ? "direction" : "therapist"}
+              mode={byDirection ? "direction" : "therapist"}
               directionId={s.directionId}
               from={dates[0]}
               guest={s.path === "guest"}
-              onPick={(doctorId) => go(s.path === "outpatient" ? "service" : "slot", { doctorId, slot: undefined })}
+              onPick={(doctorId) => go(byDirection ? "service" : "slot", { doctorId, slot: undefined })}
             />
           )}
           {step === "service" && s.doctorId && s.directionId && (

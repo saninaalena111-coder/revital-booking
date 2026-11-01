@@ -21,7 +21,7 @@ const SCENARIOS: { title: string; time: string; steps: { label: string; href: st
     title: "Гость записался с сайта — запись у врача и в карте",
     time: "2 мин",
     steps: [
-      { label: "Гость записывается к Марии Ивановне Орловой", href: "/booking" },
+      { label: "Гость записывается — сайт видит его курс из МИС", href: "/booking" },
       { label: "Врач видит запись «С сайта» в своём дне", href: "/mis/today?as=doctor" },
       { label: "Запись в карте гостя", href: "/mis/patient?id=p-anna&as=doctor" },
     ],
@@ -77,6 +77,14 @@ const SCENARIOS: { title: string; time: string; steps: { label: string; href: st
     steps: [{ label: "Помощник отвечает по шагам и ведёт на экран", href: "/mis/today?as=doctor&ask=как оформить выписку" }],
   },
   {
+    title: "Главный врач видит, что сделано и что нет",
+    time: "1 мин",
+    steps: [
+      { label: "Отчёты и качество: «Требует внимания»", href: "/mis/reports?as=chief" },
+      { label: "Печать отчёта и листа назначений", href: "/mis/patient?id=p-anna&tab=prescriptions&as=chief" },
+    ],
+  },
+  {
     title: "Глазами гостя: расписание процедур и выписка",
     time: "2 мин",
     steps: [
@@ -96,6 +104,7 @@ const BOOKING_TOUR = [
   { q: "Зачем нужен обмен данными с «Санаториумом»", href: "/how-it-works#api" },
   { q: "Зачем нужны события об изменении записи", href: "/how-it-works#events" },
   { q: "Польза личного кабинета, СМС и аналитики", href: "/cabinet?tab=visits" },
+  { q: "Не только МИС: какие ещё задачи компании закрываются", href: "/more" },
 ];
 
 export function DemoNavigator() {
@@ -108,7 +117,7 @@ export function DemoNavigator() {
   const staff = pathname.startsWith("/mis") || pathname.startsWith("/admin");
 
   return (
-    <div className="fixed bottom-4 right-4 z-[55] sm:bottom-6 sm:right-6">
+    <div className="fixed bottom-4 right-4 z-[55] sm:bottom-6 sm:right-6 print:hidden">
       <AnimatePresence>
         {open && (
           <motion.div

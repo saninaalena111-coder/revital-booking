@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import {
-  BarChart3, BedDouble, CalendarClock, CalendarHeart, Check, ChevronDown, DoorOpen, FileCheck2, LifeBuoy, Loader2,
+  BarChart3, BedDouble, CalendarClock, CalendarHeart, Check, ChevronDown, ClipboardCheck, DoorOpen, FileCheck2, LifeBuoy, Loader2,
   LogOut, Megaphone, Menu, ShieldCheck, Sun, Syringe, Ticket, UsersRound, UtensilsCrossed, X, type LucideIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
@@ -32,6 +32,7 @@ export const SECTION_ICONS: Record<SectionId, LucideIcon> = {
   sources: Megaphone,
   admin: ShieldCheck,
   help: LifeBuoy,
+  reports: ClipboardCheck,
 };
 
 /** Внутренние экраны, у которых нет своего пункта меню, относятся к разделу */
@@ -113,7 +114,7 @@ export function MisShell({ children }: { children: ReactNode }) {
                 : onDark ? "text-sage hover:bg-milk/5 hover:text-milk" : "text-ink/80 hover:bg-cream"
             }`}
           >
-            {active && onDark && <motion.span layoutId="mis-nav" className="absolute inset-0 rounded-xl bg-milk" transition={{ type: "spring", bounce: 0.15, duration: 0.5 }} />}
+            {active && onDark && <motion.span layoutId="mis-nav" className="absolute inset-0 rounded-xl bg-milk shadow-[0_8px_24px_-12px_rgb(0_0_0/0.5)]" transition={{ type: "spring", bounce: 0.18, duration: 0.5 }} />}
             <Icon size={18} strokeWidth={1.5} className="relative shrink-0" />
             <span className="relative">{sec.title}</span>
           </Link>
@@ -136,9 +137,9 @@ export function MisShell({ children }: { children: ReactNode }) {
     );
 
   return (
-    <div style={style} className="min-h-screen bg-cream/50 lg:grid lg:grid-cols-[264px_1fr]">
+    <div style={style} className="min-h-screen bg-cream/30 lg:grid lg:grid-cols-[264px_1fr] print:block print:bg-white">
       {/* боковая панель */}
-      <aside className="sticky top-0 hidden h-screen flex-col overflow-y-auto bg-forest-deep text-milk lg:flex">
+      <aside className="sticky top-0 hidden h-screen flex-col overflow-y-auto bg-gradient-to-b from-forest-deep via-forest-deep to-[#173029] text-milk shadow-[8px_0_40px_-24px_rgb(30_56_54/0.6)] lg:flex print:hidden">
         <div className="px-6 pb-5 pt-6">
           <TenantLogo tenant={s.tenant} light subtitle="Для сотрудников" href={home} />
         </div>
@@ -153,7 +154,7 @@ export function MisShell({ children }: { children: ReactNode }) {
       </aside>
 
       <div className="min-w-0">
-        <header className="glass sticky top-0 z-40 border-b border-line">
+        <header className="glass sticky top-0 z-40 border-b border-line print:hidden">
           <div className="flex h-16 items-center justify-between gap-3 px-4 sm:px-8">
             <div className="flex min-w-0 items-center gap-3">
               <button
@@ -163,8 +164,10 @@ export function MisShell({ children }: { children: ReactNode }) {
               >
                 <Menu size={19} />
               </button>
-              <div className="hidden text-sm text-muted xl:block">
-                <span className="capitalize">{fmtWeekdayLong(DEMO_TODAY)}</span>, {fmtDay(DEMO_TODAY)}
+              {/* Демо-день фиксирован, чтобы все сценарии показывали одно и то же */}
+              <div className="hidden items-center gap-2 text-sm text-muted xl:flex" title="Демо-день: все сценарии показаны на 12 октября 2026, 10:40">
+                <span><span className="capitalize">{fmtWeekdayLong(DEMO_TODAY)}</span>, {fmtDay(DEMO_TODAY)}</span>
+                <span className="rounded-full bg-gold-soft px-2 py-0.5 text-[11px] font-medium text-[#7a5a1c]">демо-день</span>
               </div>
               <SanatoriumSwitch />
             </div>
@@ -175,7 +178,10 @@ export function MisShell({ children }: { children: ReactNode }) {
         </header>
 
         <div className="px-4 pb-28 pt-6 sm:px-8 sm:pt-8">
-          {allowed ? children : <NoAccess section={section!} home={home} />}
+          {/* каждый экран плавно появляется */}
+          <div key={pathname} className="rise-in">
+            {allowed ? children : <NoAccess section={section!} home={home} />}
+          </div>
         </div>
       </div>
 
@@ -226,7 +232,7 @@ function SanatoriumSwitch() {
     return () => document.removeEventListener("mousedown", close);
   }, [open]);
 
-  const options = [{ id: "all" as const, title: "Все санатории", sub: `Сеть «${s.tenant.brand.name}»` }, ...s.tenant.sanatoriums.map((x) => ({ id: x.id, title: x.title, sub: x.placeholder ? "Данные уточняются" : x.city }))];
+  const options = [{ id: "all" as const, title: "Вся сеть", sub: `${s.tenant.brand.name}: 4 санатория и 2 СПА-клуба` }, ...s.tenant.sanatoriums.map((x) => ({ id: x.id, title: x.title, sub: x.kind === "spa" ? `${x.city} · СПА-клуб, без проживания` : `${x.city} · ${x.stars}★` }))];
   const current = options.find((o) => o.id === s.sanatoriumId) ?? options[0];
 
   return (

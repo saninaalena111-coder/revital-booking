@@ -50,7 +50,7 @@ export function DoctorDay() {
             key={d}
             onClick={() => setDate(d)}
             className={`flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-2xl border transition ${
-              d === date ? "border-forest bg-forest text-milk" : "border-line bg-milk text-ink/80 hover:border-forest/40"
+              d === date ? "border-forest bg-forest text-milk" : "border-white/70 bg-milk/70 text-ink/80 shadow-[var(--shadow-soft)] backdrop-blur-sm hover:border-forest/40"
             }`}
           >
             <span className="font-display text-2xl leading-none">{dayNum(d)}</span>

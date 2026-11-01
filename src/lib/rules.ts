@@ -5,5 +5,8 @@
 /** Гостю санатория на первом этапе доступна только первичная консультация терапевта */
 export const GUEST_PRIMARY_SERVICE_ID = "ther-primary";
 
+/** После первичного приёма гость может записаться на повторный приём и к любому специалисту */
+export const GUEST_REPEAT_SERVICE_ID = "ther-repeat";
+
 /** Терапевты, среди которых ищется «ближайший свободный» */
 export const THERAPIST_IDS = ["orlova", "volkova"];

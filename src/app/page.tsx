@@ -186,6 +186,16 @@ export default function HomePage() {
         </div>
       </section>
 
+      <div className="mx-auto mt-6 max-w-7xl px-4 sm:px-8">
+        <Link href="/more" className="surface surface-hover flex flex-col gap-2 rounded-[28px] p-6 sm:flex-row sm:items-center sm:justify-between">
+          <span>
+            <span className="block text-[18px] font-semibold text-forest-deep">Не только МИС</span>
+            <span className="block text-[15px] text-muted">Путеводитель гостя, мотивация персонала, отчёты для собраний, автоматизация рутины</span>
+          </span>
+          <span className="inline-flex items-center gap-2 text-[15px] font-medium text-forest">Подробнее <ArrowRight size={17} /></span>
+        </Link>
+      </div>
+
       {/* КАНАЛЫ */}
       <section className="mx-auto max-w-7xl px-4 py-24 sm:px-8">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-[1fr_1.1fr] lg:items-center">

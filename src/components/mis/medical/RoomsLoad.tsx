@@ -5,7 +5,7 @@ import { useState } from "react";
 import type { ISODate, Minutes } from "@/lib/types";
 import { useService } from "@/hooks/useService";
 import { useSession } from "@/hooks/useSession";
-import { proceduresService, type SessionRow } from "@/services";
+import { catalogService, proceduresService, type SessionRow } from "@/services";
 import { addDays, dayNum, DEMO_NOW, DEMO_TODAY, fmtRange, fmtTime, fmtWeekdayShort, toMin } from "@/lib/time";
 import { GUEST_MEALS } from "@/lib/scheduling/planner";
 import { LinkButton } from "@/components/ui/Button";
@@ -39,7 +39,9 @@ export function RoomsLoad() {
   const { sanatoriumId, sanatorium } = useSession();
   const [date, setDate] = useState<ISODate>(DEMO_TODAY);
   const [open, setOpen] = useState<SessionRow | null>(null);
+  // У двух санаториев Геленджика общий медицинский центр — его кабинеты и показываем
   const san = sanatoriumId === "all" ? "gelendzhik" : sanatoriumId;
+  const hasRooms = catalogService.medRooms(san).length > 0;
   const { data } = useService(() => proceduresService.roomsLoad(date, san), [date, san]);
   const pct = (m: Minutes) => ((m - FROM) / (TO - FROM)) * 100;
   const hours = Array.from({ length: (TO - FROM) / 60 + 1 }, (_, i) => FROM + i * 60);
@@ -49,14 +51,14 @@ export function RoomsLoad() {
       <MisTitle title="Загрузка кабинетов" lead="Каждая строка — кабинет, полоски — процедуры гостей. Серые зоны — время питания гостей: на него процедуры не назначаются." />
       <div className="scrollbar-none -mx-4 mb-6 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0">
         {Array.from({ length: 7 }, (_, i) => addDays(DEMO_TODAY, i)).map((d) => (
-          <button key={d} onClick={() => setDate(d)} className={`flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border ${d === date ? "border-forest bg-forest text-milk" : "border-line bg-milk text-ink/80"}`}>
+          <button key={d} onClick={() => setDate(d)} className={`flex h-14 w-14 shrink-0 flex-col items-center justify-center rounded-2xl border ${d === date ? "border-forest bg-forest text-milk" : "border-white/70 bg-milk/70 text-ink/80 shadow-[var(--shadow-soft)] backdrop-blur-sm"}`}>
             <span className="text-[18px] font-semibold leading-none">{dayNum(d)}</span>
             <span className="mt-1 text-[11px]">{d === DEMO_TODAY ? "сегодня" : fmtWeekdayShort(d)}</span>
           </button>
         ))}
       </div>
 
-      {sanatoriumId !== "gelendzhik" && sanatoriumId !== "all" ? (
+      {!hasRooms ? (
         <EmptyState title="Кабинеты объекта ещё не заведены" text={`Подробное расписание кабинетов в демо есть для Геленджика. ${sanatorium?.title ?? ""} подключается так же.`} />
       ) : !data ? (
         <Loading className="h-[480px]" />

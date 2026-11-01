@@ -6,7 +6,7 @@ import type { MedDocument, Patient } from "@/lib/types";
 import { useService } from "@/hooks/useService";
 import {
   appointmentsService, catalogService, doctorsService, documentsService, mealsService, prescriptionsService, proceduresService,
-  RESTAURANT_LABEL, TOMORROW, visitsService,
+  TOMORROW, visitsService,
 } from "@/services";
 import { REVITAL } from "@/config/tenant";
 import { FREQUENCY_LABEL, plural } from "@/lib/scheduling/planner";
@@ -14,6 +14,7 @@ import { daysBetween, DEMO_NOW, DEMO_TODAY, dayNum, fmtDay, fmtRange, fmtTime, f
 import { DocumentModal } from "@/components/mis/medical/DocumentPreview";
 import { MealOrderEditor } from "@/components/mis/meals/MealOrderEditor";
 import { CourseBar, DocStatusPill, useToast } from "@/components/mis/ui";
+import { PrintButton, PrintSchedule } from "@/components/mis/print/Print";
 
 const box = "rounded-[28px] border border-line bg-milk";
 const Skeleton = () => <div className="h-64 animate-pulse rounded-[28px] bg-cream/60" />;
@@ -59,14 +60,17 @@ export function GuestSchedule({ patient }: { patient: Patient }) {
 
       <div className="scrollbar-none -mx-4 mb-5 flex gap-2 overflow-x-auto px-4 sm:mx-0 sm:px-0">
         {days.map((d) => (
-          <button key={d} onClick={() => setDay(d)} className={`flex h-[72px] w-16 shrink-0 flex-col items-center justify-center rounded-2xl border ${d === day ? "border-forest bg-forest text-milk" : "border-line bg-milk text-ink/80"}`}>
+          <button key={d} onClick={() => setDay(d)} className={`flex h-[72px] w-16 shrink-0 flex-col items-center justify-center rounded-2xl border ${d === day ? "border-forest bg-forest text-milk" : "border-white/70 bg-milk/70 text-ink/80 shadow-[var(--shadow-soft)] backdrop-blur-sm"}`}>
             <span className="font-display text-[26px] leading-none">{dayNum(d)}</span>
             <span className={`mt-1 text-[11px] uppercase ${d === day ? "text-sage" : "text-muted"}`}>{d === DEMO_TODAY ? "сегодня" : fmtWeekdayShort(d)}</span>
           </button>
         ))}
       </div>
 
-      <h2 className="font-display mb-4 text-3xl capitalize text-forest-deep">{day === DEMO_TODAY ? "Сегодня" : fmtWeekdayLong(day)}, {fmtDay(day)}</h2>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h2 className="font-display text-3xl capitalize text-forest-deep">{day === DEMO_TODAY ? "Сегодня" : fmtWeekdayLong(day)}, {fmtDay(day)}</h2>
+        <PrintButton label="Распечатать расписание" make={() => <PrintSchedule forGuest patient={patient} items={items.map((i) => ({ date: i.date, start: i.start, end: i.end, title: i.title, where: i.where, done: i.done }))} />} />
+      </div>
       {!list.length ? (
         <div className="rounded-[28px] border border-dashed border-line p-8 text-center text-[16px] text-muted">
           {stay && day === stay.to ? "День выезда: выезд до 12:00. Счастливого пути!" : "В этот день процедур нет — время для прогулок по парку."}
@@ -158,7 +162,7 @@ export function GuestMeals({ patient }: { patient: Patient }) {
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_340px]">
       <div className="min-w-0">
-        {restaurant === "alacarte" ? (
+        {restaurant?.preorder ? (
           <>
             <h2 className="font-display text-3xl text-forest-deep">Заказ на завтра, {fmtDay(TOMORROW)}</h2>
             <p className="mb-5 mt-1 text-[15.5px] text-muted">
@@ -178,7 +182,7 @@ export function GuestMeals({ patient }: { patient: Patient }) {
           </>
         ) : (
           <div className={`${box} p-6 text-[16px] text-ink/80`}>
-            Вы питаетесь в зале «{RESTAURANT_LABEL.buffet}» — заказывать заранее не нужно. Блюда вашего стола отмечены на раздаче табличкой «{table.short}».
+            Вы питаетесь в зале «{restaurant?.title ?? "Ресторан"}» — заказывать заранее не нужно. Блюда вашего стола отмечены на раздаче табличкой «{table.short}».
           </div>
         )}
       </div>

@@ -29,8 +29,9 @@
   --font-sans: var(--font-myriad), "Myriad Pro", ui-sans-serif, system-ui, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --shadow-soft: 0 1px 2px rgb(31 46 44 / 0.04), 0 8px 24px -12px rgb(31 46 44 / 0.12);
-  --shadow-lift: 0 2px 4px rgb(31 46 44 / 0.04), 0 24px 48px -24px rgb(31 46 44 / 0.25);
+  --shadow-soft: 0 1px 2px rgb(31 46 44 / 0.04), 0 10px 30px -14px rgb(31 46 44 / 0.14);
+  --shadow-lift: 0 2px 6px rgb(31 46 44 / 0.05), 0 28px 56px -26px rgb(31 46 44 / 0.3);
+  --shadow-glow: 0 10px 30px -12px rgb(47 84 81 / 0.45);
 }
 
 html {
@@ -54,6 +55,50 @@ body {
   font-family: var(--font-myriad), "Myriad Pro", ui-sans-serif, system-ui, sans-serif;
   font-weight: 300;
   letter-spacing: -0.015em;
+}
+
+/* Мягкий фон с глубиной: под стеклянными карточками видны размытые пятна фирменных цветов */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(48rem 32rem at 8% -6%, rgb(203 214 195 / 0.55), transparent 62%),
+    radial-gradient(40rem 28rem at 100% 12%, rgb(241 227 196 / 0.5), transparent 60%),
+    radial-gradient(44rem 30rem at 60% 110%, rgb(89 137 136 / 0.14), transparent 65%);
+}
+
+/* Стеклянная карточка: полупрозрачный фон, размытие, светлая кромка и мягкая тень */
+.surface {
+  background: rgb(250 248 243 / 0.78);
+  backdrop-filter: blur(16px) saturate(140%);
+  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  border: 1px solid rgb(255 255 255 / 0.7);
+  box-shadow: var(--shadow-soft), inset 0 1px 0 rgb(255 255 255 / 0.6);
+  transition: box-shadow 0.35s ease, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.35s ease;
+}
+
+/* Карточка, на которую нажимают: мягко приподнимается */
+.surface-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lift), inset 0 1px 0 rgb(255 255 255 / 0.6);
+}
+
+/* Плавное появление экрана */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise-in {
+  animation: rise-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 /* Мягкое стекло для плавающих элементов */
@@ -97,4 +142,114 @@ body {
   html {
     scroll-behavior: auto;
   }
+  .rise-in,
+  .surface,
+  .surface-hover:hover {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+}
+
+/* ===================== Печать ===================== */
+
+/* Слой печати документа: на экране скрыт, при печати — единственное, что видно */
+.print-portal {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 14mm 16mm;
+  }
+  body {
+    background: #fff !important;
+  }
+  body.printing-portal > *:not(.print-portal) {
+    display: none !important;
+  }
+  body.printing-portal .print-portal {
+    display: block;
+  }
+  .glass,
+  .glass-dark,
+  .surface {
+    backdrop-filter: none !important;
+    background: #fff !important;
+    box-shadow: none !important;
+  }
+  body::before {
+    display: none;
+  }
+}
+
+.print-sheet {
+  font-family: var(--font-myriad), "Myriad Pro", ui-sans-serif, system-ui, sans-serif;
+  color: #1f2e2c;
+  font-size: 11pt;
+  line-height: 1.45;
+}
+.print-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 2px solid #2f5451;
+  padding-bottom: 8px;
+}
+.print-brand {
+  font-size: 16pt;
+  letter-spacing: 0.08em;
+  color: #2f5451;
+}
+.print-muted {
+  color: #6b7a76;
+  font-size: 9pt;
+}
+.print-title {
+  font-size: 17pt;
+  font-weight: 600;
+  margin: 14px 0 8px;
+  color: #1e3836;
+}
+.print-h2,
+.print-day h2 {
+  font-size: 11pt;
+  font-weight: 600;
+  margin: 12px 0 4px;
+  color: #2f5451;
+}
+.print-facts,
+.print-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6px 0;
+}
+.print-facts th,
+.print-facts td,
+.print-table th,
+.print-table td {
+  border: 1px solid #d6cfc0;
+  padding: 4px 6px;
+  text-align: left;
+  vertical-align: top;
+  font-size: 10pt;
+}
+.print-facts th,
+.print-table th {
+  background: #f4efe6;
+  font-weight: 600;
+}
+.print-table tr {
+  break-inside: avoid;
+}
+.print-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 28px;
+  padding-top: 8px;
+  border-top: 1px solid #d6cfc0;
+  font-size: 9pt;
+  color: #6b7a76;
 }

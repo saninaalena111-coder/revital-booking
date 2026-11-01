@@ -16,7 +16,8 @@ const mln = (n: number) => `${(n / 1_000_000).toFixed(1).replace(".", ",")} мл
 export function Analytics() {
   const { sanatoriumId, sanatorium, tenant } = useSession();
   const { data } = useService(() => analyticsService.network(sanatoriumId), [sanatoriumId]);
-  const colorOf = (id: string) => SERIES_COLORS[tenant.sanatoriums.findIndex((s) => s.id === id)];
+  // Цвет закреплён за объектом: санатории — проверенная палитра, СПА-клубы — спокойные нейтральные тона
+  const colorOf = (id: string) => SERIES_COLORS[tenant.sanatoriums.findIndex((s) => s.id === id)] ?? (id === "spa-moscow" ? "#7d8a96" : "#a3a99f");
 
   return (
     <>
@@ -55,7 +56,7 @@ export function Analytics() {
             </section>
             <section className={`${card} p-5`}>
               <h2 className="text-[17px] font-semibold text-forest-deep">Выручка за 30 дней</h2>
-              <p className="mb-4 text-[13.5px] text-muted">Проживание и лечение по путёвкам, демо-расчёт.</p>
+              <p className="mb-4 text-[13.5px] text-muted">Путёвки (цены номеров с сайта + лечение) и процедуры СПА-клубов, демо-расчёт.</p>
               <BarList rows={data.sanatoriums.map((s) => ({ label: s.short, value: s.revenue30, color: colorOf(s.id) }))} format={mln} />
               <h3 className="mb-3 mt-6 text-[15px] font-semibold text-forest-deep">Откуда приходят гости</h3>
               <BarList rows={data.sources.slice(0, 6)} format={(v) => `${v} броней`} color="var(--color-teal)" />
@@ -99,12 +100,12 @@ export function Analytics() {
                     <tr key={s.id}>
                       <td className="px-5 py-3">
                         <span className="flex items-center gap-2 font-medium text-forest-deep"><i className="h-2.5 w-2.5 rounded-full" style={{ background: colorOf(s.id) }} />{s.title}</span>
-                        {s.placeholder && <span className="text-[12.5px] text-muted">данные уточняются</span>}
+                        {s.kind === "spa" && <span className="text-[12.5px] text-muted">без проживания · {s.visits30?.toLocaleString("ru-RU")} посещений за 30 дней</span>}
                       </td>
-                      <td className="px-5 py-3 text-right tabular-nums">{s.rooms}</td>
-                      <td className="px-5 py-3 text-right tabular-nums">{s.living}</td>
-                      <td className="px-5 py-3 text-right tabular-nums">{s.occupancyToday}%</td>
-                      <td className="px-5 py-3 text-right tabular-nums">{s.occupancy30}%</td>
+                      <td className="px-5 py-3 text-right tabular-nums">{s.kind === "spa" ? "—" : s.rooms}</td>
+                      <td className="px-5 py-3 text-right tabular-nums">{s.kind === "spa" ? "—" : s.living}</td>
+                      <td className="px-5 py-3 text-right tabular-nums">{s.kind === "spa" ? "—" : `${s.occupancyToday}%`}</td>
+                      <td className="px-5 py-3 text-right tabular-nums">{s.kind === "spa" ? "—" : `${s.occupancy30}%`}</td>
                       <td className="px-5 py-3 text-right tabular-nums">{mln(s.revenue30)}</td>
                     </tr>
                   ))}

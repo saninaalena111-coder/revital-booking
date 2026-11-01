@@ -47,7 +47,7 @@ export function ProcedureQueue() {
                 key={r.id}
                 onClick={() => toggleRoom(r.id)}
                 aria-pressed={on}
-                className={`flex min-h-11 shrink-0 items-center gap-2 rounded-full border px-4 text-[14px] transition ${on ? "border-forest bg-forest text-milk" : "border-line bg-milk text-ink/80 hover:border-forest/40"}`}
+                className={`flex min-h-11 shrink-0 items-center gap-2 rounded-full border px-4 text-[14px] transition ${on ? "border-forest bg-forest text-milk" : "border-white/70 bg-milk/70 text-ink/80 shadow-[var(--shadow-soft)] backdrop-blur-sm hover:border-forest/40"}`}
               >
                 {on && <Check size={14} />} №{r.number} · {r.title}
               </button>

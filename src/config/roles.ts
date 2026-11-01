@@ -11,7 +11,7 @@ export type { RoleId };
 
 export type SectionId =
   | "today" | "patients" | "procedures" | "rooms" | "egisz"
-  | "stays" | "bookings" | "meals" | "records" | "analytics" | "sources" | "admin" | "help";
+  | "stays" | "bookings" | "meals" | "records" | "analytics" | "sources" | "admin" | "help" | "reports";
 
 export interface Section {
   id: SectionId;
@@ -35,6 +35,7 @@ export const SECTIONS: Record<SectionId, Section> = {
   sources: { id: "sources", title: "Источники гостей", href: "/mis/sources" },
   admin: { id: "admin", title: "Администрирование", href: "/mis/admin" },
   help: { id: "help", title: "Справка", href: "/mis/help" },
+  reports: { id: "reports", title: "Отчёты и качество", href: "/mis/reports", medical: true },
 };
 
 export interface Role {
@@ -43,12 +44,17 @@ export interface Role {
   /** Одна строка «что вы здесь делаете» для экрана входа */
   line: string;
   /** Иконка lucide (название компонента) */
-  icon: "stethoscope" | "syringe" | "concierge" | "calendar" | "utensils" | "chart" | "megaphone" | "shield";
+  icon: "stethoscope" | "syringe" | "concierge" | "calendar" | "utensils" | "chart" | "megaphone" | "shield" | "clipboard";
   start: SectionId;
   menu: SectionId[];
 }
 
 export const ROLES: Role[] = [
+  {
+    id: "chief", title: "Главный врач", icon: "clipboard",
+    line: "Качество лечения: отчёты по врачам, документам и выполнению назначений",
+    start: "reports", menu: ["reports", "patients", "egisz", "rooms", "procedures", "records", "help"],
+  },
   {
     id: "doctor", title: "Врач", icon: "stethoscope",
     line: "Пациенты на сегодня, приём, назначения и документы",

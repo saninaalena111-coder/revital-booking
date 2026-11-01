@@ -46,8 +46,8 @@ export function MisLogin() {
           {s.tenant.sanatoriums.map((x) => (
             <li key={x.id} className="flex items-center gap-2.5">
               <MapPin size={15} className="shrink-0 text-gold" />
-              <span className="text-milk">{x.title}</span>
-              {x.placeholder && <span className="text-sage/70">· уточняется</span>}
+              <span className="text-milk">{x.kind === "spa" ? x.title.replace("СПА-клуб Ревиталь ", "СПА-клуб ") : x.title.replace(/ \d★$/, "")}</span>
+              <span className="text-sage/70">· {x.kind === "spa" ? "СПА-клуб" : `${x.stars}★`}</span>
             </li>
           ))}
         </ul>
@@ -74,8 +74,8 @@ export function MisLogin() {
                 onClick={() => setPicked(r.id)}
                 onDoubleClick={() => enter(r.id)}
                 aria-pressed={active}
-                className={`relative flex min-h-[88px] items-start gap-4 rounded-3xl border p-4 text-left transition sm:p-5 ${
-                  active ? "border-forest bg-milk shadow-[var(--shadow-lift)] ring-2 ring-forest/15" : "border-line bg-milk/70 hover:border-forest/40 hover:bg-milk"
+                className={`surface surface-hover relative flex min-h-[88px] items-start gap-4 rounded-3xl p-4 text-left sm:p-5 ${
+                  active ? "!border-forest/60 ring-2 ring-forest/15" : ""
                 }`}
               >
                 <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl ${active ? "bg-forest text-milk" : "bg-sage-soft text-forest"}`}>

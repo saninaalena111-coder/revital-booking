@@ -9,7 +9,7 @@
  * (GET /appointments?date=…) и обновляются по событиям webhook.
  */
 import type { Appointment, Attribution, ISODate } from "@/lib/types";
-import { DEMO_TODAY, toMin, weekday } from "@/lib/time";
+import { addDays, DEMO_TODAY, toMin, weekday } from "@/lib/time";
 import { DOCTORS, ROOMS, SERVICES } from "./catalog";
 import { checkSlot, doctorDayStatus } from "@/lib/scheduling/engine";
 import { overlaps } from "@/lib/time";
@@ -134,12 +134,38 @@ function rng(seed: string) {
 
 const cache = new Map<ISODate, Appointment[]>();
 
+/**
+ * Первичный приём гостей, которые заезжают сегодня (заезд с 14:00): сегодня после обеда
+ * у свободного терапевта, остальным — завтра с утра. Так у каждого нового гостя есть запись к врачу.
+ */
+function arrivalPrimaries(date: ISODate): Appointment[] {
+  const arrivals = dataset().patients.filter((p) => p.type === "guest" && p.stay?.from === DEMO_TODAY);
+  const SLOTS: [string, string, string][] = [["volkova", "205", "15:00"], ["volkova", "205", "15:30"], ["orlova", "201", "16:00"], ["orlova", "201", "16:30"]];
+  const tomorrow = ["09:00", "09:30", "10:00"];
+  return arrivals.flatMap((p, i) => {
+    const today = i < SLOTS.length;
+    if ((date === DEMO_TODAY) !== today) return [];
+    const [doctorId, roomId, time] = today ? SLOTS[i] : ["orlova", "201", tomorrow[(i - SLOTS.length) % tomorrow.length]];
+    const start = toMin(time);
+    return [{
+      id: `a-arrival-${p.id}`, misId: `SAN-APP-AR${p.id.slice(2)}`, patientId: p.id, patientName: `${p.lastName} ${p.firstName[0]}.`,
+      doctorId, serviceId: "ther-primary", roomId, date, start, end: start + 30, status: "confirmed" as const, kind: "visit" as const,
+      note: "Первичный приём в день заезда", createdVia: "mis" as const, createdAt: "2026-10-10T12:00:00",
+    }];
+  });
+}
+
 export function generatedFor(date: ISODate): Appointment[] {
-  if (date === DEMO_TODAY) return [];
   const hit = cache.get(date);
   if (hit) return hit;
+  if (date === DEMO_TODAY) {
+    const list = arrivalPrimaries(date);
+    cache.set(date, list);
+    return list;
+  }
   const rand = rng(date);
-  const list: Appointment[] = [];
+  // Гости сегодняшнего заезда, которым не хватило окон сегодня, — первыми завтра; случайная занятость их учитывает
+  const list: Appointment[] = date === addDays(DEMO_TODAY, 1) ? arrivalPrimaries(date) : [];
   const ctx = { doctors: DOCTORS, rooms: ROOMS, services: SERVICES, appointments: list };
   const fill = weekday(date) === 6 ? 0.35 : 0.5;
   const { pool, free } = patientPool(date);

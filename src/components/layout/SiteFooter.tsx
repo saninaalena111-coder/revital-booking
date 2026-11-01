@@ -13,7 +13,7 @@ export function SiteFooter() {
         </div>
         <FooterCol title="Пациенту" links={[["Записаться", "/booking"], ["Личный кабинет", "/cabinet"], ["Главная", "/"]]} />
         <FooterCol title="Как это работает" links={[["Логика расписания", "/logic"], ["Интеграция с МИС", "/how-it-works"], ["Что нужно от МИС", "/requirements"]]} />
-        <FooterCol title="Сотрудникам" links={[["Вход в МИС", "/mis"], ["Дашборд онлайн-записи", "/admin"], ["Для разработчиков", "/admin?tab=dev-exchange"]]} />
+        <FooterCol title="Сотрудникам" links={[["Вход в МИС", "/mis"], ["Не только МИС", "/more"], ["Дашборд онлайн-записи", "/admin"], ["Для разработчиков", "/admin?tab=dev-exchange"]]} />
       </div>
       <div className="border-t border-line">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-5 text-xs text-muted sm:flex-row sm:justify-between sm:px-8">

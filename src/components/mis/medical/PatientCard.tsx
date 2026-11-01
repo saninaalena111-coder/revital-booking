@@ -9,7 +9,7 @@ import { useService } from "@/hooks/useService";
 import { useSession } from "@/hooks/useSession";
 import {
   appointmentsService, auditService, catalogService, doctorsService, documentsService, labsService, patientAge, patientFullName,
-  patientsService, PATIENT_TYPE_LABEL, proceduresService, visitsService,
+  patientsService, PATIENT_TYPE_LABEL, prescriptionsService, proceduresService, visitsService,
 } from "@/services";
 import { DEMO_TODAY, dayNum, fmtDay, fmtRange, fmtTime, fmtWeekdayLong, relativeDay } from "@/lib/time";
 import { Button, LinkButton } from "@/components/ui/Button";
@@ -18,6 +18,7 @@ import { BackLink, card, DocStatusPill, EmptyState, Loading, SessionStatusPill, 
 import { DocumentModal } from "./DocumentPreview";
 import { AddPrescription, CourseList } from "./Prescriptions";
 import { SignModal } from "../egisz/SignModal";
+import { PrintButton, PrintCard, PrintPrescriptions, PrintSchedule } from "../print/Print";
 
 type Tab = "visits" | "prescriptions" | "schedule" | "documents" | "labs";
 const TABS: { value: Tab; label: string }[] = [
@@ -126,6 +127,13 @@ function PatientHeader({ patient }: { patient: Patient }) {
               <FileText size={16} /> Сформировать выписку
             </Button>
           )}
+          <PrintButton
+            label="Распечатать карту"
+            make={async () => {
+              const [course, visits, docs] = await Promise.all([prescriptionsService.forPatient(patient.id), visitsService.forPatient(patient.id), documentsService.forPatient(patient.id)]);
+              return <PrintCard patient={patient} course={course} visits={visits} docs={docs} />;
+            }}
+          />
           {patient.id === "p-anna" && (
             <LinkButton href="/cabinet" variant="ghost">
               <UserRound size={16} /> Глазами гостя
@@ -230,7 +238,10 @@ function PrescriptionsTab({ patient }: { patient: Patient }) {
   return (
     <div className="grid gap-6 xl:grid-cols-[1fr_440px]">
       <div className="min-w-0">
-        <h2 className="mb-3 text-[17px] font-semibold text-forest-deep">Курс процедур</h2>
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-[17px] font-semibold text-forest-deep">Курс процедур</h2>
+          <PrintButton label="Распечатать лист назначений" make={async () => <PrintPrescriptions patient={patient} course={await prescriptionsService.forPatient(patient.id)} />} />
+        </div>
         <CourseList patientId={patient.id} canEdit={canEdit} onChanged={toast.show} />
       </div>
       {canEdit && patient.stay && <AddPrescription patient={patient} onAdded={toast.show} />}
@@ -267,6 +278,9 @@ function ScheduleTab({ patient }: { patient: Patient }) {
 
   return (
     <div className="space-y-5">
+      <div className="flex justify-end">
+        <PrintButton label="Распечатать расписание" make={() => <PrintSchedule patient={patient} items={items.map((i) => ({ date: i.date, start: i.start, end: i.end, title: i.title, where: i.place }))} />} />
+      </div>
       {days.map((d) => (
         <section key={d}>
           <h3 className={`mb-2 text-[15px] font-semibold capitalize ${d === DEMO_TODAY ? "text-teal" : "text-forest-deep"}`}>

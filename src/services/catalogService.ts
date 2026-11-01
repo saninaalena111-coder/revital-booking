@@ -6,6 +6,7 @@
  */
 import type { Diagnosis, DietTable, Dish, MedRoom, Procedure, ProcedureCategory, Program, SanatoriumId } from "@/lib/types";
 import { DIET_TABLES, DISHES, ICD10, MED_ROOMS, PROCEDURES, PROGRAMS } from "@/mock/mis/catalog";
+import { REVITAL } from "@/config/tenant";
 
 export const CATEGORY_LABEL: Record<ProcedureCategory, string> = {
   bath: "Ванны",
@@ -27,8 +28,11 @@ export const CATEGORY_LABEL: Record<ProcedureCategory, string> = {
 export const catalogService = {
   procedures: (): Procedure[] => PROCEDURES,
   procedure: (id: string) => PROCEDURES.find((p) => p.id === id)!,
-  medRooms: (sanatoriumId: SanatoriumId | "all" = "gelendzhik"): MedRoom[] =>
-    MED_ROOMS.filter((r) => sanatoriumId === "all" || r.sanatoriumId === sanatoriumId),
+  /** Кабинеты медицинского центра объекта (у двух санаториев Геленджика центр общий) */
+  medRooms: (sanatoriumId: SanatoriumId | "all" = "gelendzhik"): MedRoom[] => {
+    const center = sanatoriumId === "all" ? "all" : REVITAL.sanatoriums.find((s) => s.id === sanatoriumId)?.medCenter ?? sanatoriumId;
+    return MED_ROOMS.filter((r) => center === "all" || r.sanatoriumId === center);
+  },
   medRoom: (id: string) => MED_ROOMS.find((r) => r.id === id)!,
   programs: (): Program[] => PROGRAMS,
   program: (id: string) => PROGRAMS.find((p) => p.id === id)!,

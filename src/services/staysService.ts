@@ -11,6 +11,7 @@ import type { HotelRoom, ISODate, PaymentStatus, RoomDayState, SanatoriumId, Sta
 import { REVITAL } from "@/config/tenant";
 import { hotelRooms, tables } from "@/mock/mis/store";
 import { addDays, DEMO_TODAY, nightsBetween } from "@/lib/time";
+import { stayPrice } from "@/lib/pricing";
 import { catalogService } from "./catalogService";
 import { auditService } from "./auditService";
 import { latency, uid } from "./config";
@@ -56,6 +57,9 @@ function cellFor(room: HotelRoom, date: ISODate, stays: Stay[]): GridCell {
   if (room.repair) return { state: "repair" };
   const stay = stays.find((s) => s.from <= date && date < s.to);
   if (stay) return { state: stay.status === "checked_in" ? "living" : "booked", stay, starts: stay.from === date };
+  // Сегодня выезжает, но ещё не выселен — номер занят до выезда (до 12:00)
+  const leaving = stays.find((s) => s.to === date && s.status === "checked_in");
+  if (leaving && date === DEMO_TODAY) return { state: "living", stay: leaving };
   // В день выезда после выселения номер уходит на уборку
   const left = stays.find((s) => s.to === date && s.status === "checked_out");
   if (left && date === DEMO_TODAY) return { state: "cleaning", stay: left };
@@ -74,6 +78,11 @@ export interface NewStayInput {
 }
 
 export const staysService = {
+  /** Цена номера за ночь «от» — по данным сайта сети */
+  roomPrice(room: HotelRoom) {
+    return REVITAL.sanatoriums.find((s) => s.id === room.sanatoriumId)!.roomTypes.find((t) => t.id === room.typeId)?.priceRub ?? 0;
+  },
+
   roomTypeTitle(room: HotelRoom) {
     const san = REVITAL.sanatoriums.find((s) => s.id === room.sanatoriumId)!;
     return san.roomTypes.find((t) => t.id === room.typeId)?.title ?? "Номер";
@@ -168,7 +177,9 @@ export const staysService = {
   async create(input: NewStayInput): Promise<Stay> {
     await latency(700);
     const nights = nightsBetween(input.from, input.to);
-    const amountRub = catalogService.program(input.programId).pricePerNightRub * nights * input.guests;
+    const room = hotelRooms().find((r) => r.id === input.hotelRoomId)!;
+    const roomPrice = REVITAL.sanatoriums.find((x) => x.id === room.sanatoriumId)!.roomTypes.find((t) => t.id === room.typeId)!.priceRub;
+    const amountRub = stayPrice(roomPrice, catalogService.program(input.programId).pricePerNightRub, nights, input.guests);
     const stay: Stay = {
       id: uid("st"),
       sanatoriumId: input.sanatoriumId, patientId: null, guestName: input.guestName, hotelRoomId: input.hotelRoomId,
