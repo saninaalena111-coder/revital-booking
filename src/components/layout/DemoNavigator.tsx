@@ -77,6 +77,14 @@ const SCENARIOS: { title: string; time: string; steps: { label: string; href: st
     steps: [{ label: "Помощник отвечает по шагам и ведёт на экран", href: "/mis/today?as=doctor&ask=как оформить выписку" }],
   },
   {
+    title: "Главный врач видит, что сделано и что нет",
+    time: "1 мин",
+    steps: [
+      { label: "Отчёты и качество: «Требует внимания»", href: "/mis/reports?as=chief" },
+      { label: "Печать отчёта и листа назначений", href: "/mis/patient?id=p-anna&tab=prescriptions&as=chief" },
+    ],
+  },
+  {
     title: "Глазами гостя: расписание процедур и выписка",
     time: "2 мин",
     steps: [
@@ -96,6 +104,7 @@ const BOOKING_TOUR = [
   { q: "Зачем нужен обмен данными с «Санаториумом»", href: "/how-it-works#api" },
   { q: "Зачем нужны события об изменении записи", href: "/how-it-works#events" },
   { q: "Польза личного кабинета, СМС и аналитики", href: "/cabinet?tab=visits" },
+  { q: "Не только МИС: какие ещё задачи компании закрываются", href: "/more" },
 ];
 
 export function DemoNavigator() {
