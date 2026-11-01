@@ -1,6 +1,6 @@
 "use client";
 
-import { ChefHat, ClipboardCheck, Printer, Search, UtensilsCrossed } from "lucide-react";
+import { ChefHat, ClipboardCheck, Search, UtensilsCrossed } from "lucide-react";
 import { useState } from "react";
 import type { SanatoriumId } from "@/lib/types";
 import { useService } from "@/hooks/useService";
@@ -9,7 +9,7 @@ import { catalogService, mealsService, TOMORROW, type MealGuest } from "@/servic
 import { fmtDay, fmtWeekdayLong } from "@/lib/time";
 import { Modal } from "@/components/ui/Modal";
 import { Segmented } from "@/components/ui/Segmented";
-import { ComingSoonButton } from "../ComingSoon";
+import { PrintButton, PrintKitchen } from "../print/Print";
 import { MisTitle } from "../MisShell";
 import { card, CourseBar, EmptyState, Loading, Stat, StatusPill, useToast } from "../ui";
 import { MealOrderEditor } from "./MealOrderEditor";
@@ -37,7 +37,7 @@ export function Meals() {
       <MisTitle
         title="Питание"
         lead={<>{san.title}: заказы на завтра, <span className="lowercase">{fmtWeekdayLong(TOMORROW)}</span>, {fmtDay(TOMORROW)}. Кухня готовит на всех проживающих: гостям с медкартой диетстол назначает врач, остальным — общий стол №15.</>}
-        right={<ComingSoonButton feature="print" variant="secondary"><Printer size={16} /> Печать для кухни</ComingSoonButton>}
+        right={<PrintButton label="Печать для кухни" make={async () => <PrintKitchen title={san.title} date={TOMORROW} kitchen={await mealsService.kitchen(TOMORROW, san.id)} />} />}
       />
       {sanatoriumId === "all" && <p className="-mt-4 mb-5 text-[14px] text-muted">Выбрана вся сеть — показываем {san.title}. Другой объект выберите в шапке.</p>}
       <div className="mb-6 grid gap-3 sm:grid-cols-2">

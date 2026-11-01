@@ -14,6 +14,7 @@ import { daysBetween, DEMO_NOW, DEMO_TODAY, dayNum, fmtDay, fmtRange, fmtTime, f
 import { DocumentModal } from "@/components/mis/medical/DocumentPreview";
 import { MealOrderEditor } from "@/components/mis/meals/MealOrderEditor";
 import { CourseBar, DocStatusPill, useToast } from "@/components/mis/ui";
+import { PrintButton, PrintSchedule } from "@/components/mis/print/Print";
 
 const box = "rounded-[28px] border border-line bg-milk";
 const Skeleton = () => <div className="h-64 animate-pulse rounded-[28px] bg-cream/60" />;
@@ -66,7 +67,10 @@ export function GuestSchedule({ patient }: { patient: Patient }) {
         ))}
       </div>
 
-      <h2 className="font-display mb-4 text-3xl capitalize text-forest-deep">{day === DEMO_TODAY ? "Сегодня" : fmtWeekdayLong(day)}, {fmtDay(day)}</h2>
+      <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+        <h2 className="font-display text-3xl capitalize text-forest-deep">{day === DEMO_TODAY ? "Сегодня" : fmtWeekdayLong(day)}, {fmtDay(day)}</h2>
+        <PrintButton label="Распечатать расписание" make={() => <PrintSchedule forGuest patient={patient} items={items.map((i) => ({ date: i.date, start: i.start, end: i.end, title: i.title, where: i.where, done: i.done }))} />} />
+      </div>
       {!list.length ? (
         <div className="rounded-[28px] border border-dashed border-line p-8 text-center text-[16px] text-muted">
           {stay && day === stay.to ? "День выезда: выезд до 12:00. Счастливого пути!" : "В этот день процедур нет — время для прогулок по парку."}

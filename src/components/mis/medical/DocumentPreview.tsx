@@ -1,12 +1,11 @@
 "use client";
 
-import { Printer } from "lucide-react";
 import type { MedDocument, Patient } from "@/lib/types";
 import { useSession } from "@/hooks/useSession";
 import { patientAge, patientFullName, visitsService } from "@/services";
 import { fmtDay } from "@/lib/time";
 import { Modal } from "@/components/ui/Modal";
-import { ComingSoonButton } from "../ComingSoon";
+import { PrintButton, PrintDocument } from "../print/Print";
 import { DocStatusPill } from "../ui";
 
 /** Документ на «фирменном бланке» — так его увидит гость и отправит ЕГИСЗ */
@@ -54,9 +53,7 @@ export function DocumentModal({ doc, patient, onClose, actions }: { doc: MedDocu
         <>
           <DocumentSheet doc={doc} patient={patient} />
           <div className="mt-5 flex flex-wrap justify-end gap-2">
-            <ComingSoonButton feature="print" variant="ghost">
-              <Printer size={16} /> Печать
-            </ComingSoonButton>
+            <PrintButton label="Распечатать" make={() => <PrintDocument doc={doc} patient={patient} />} />
             {actions}
           </div>
         </>

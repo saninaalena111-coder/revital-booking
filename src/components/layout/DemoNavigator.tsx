@@ -108,7 +108,7 @@ export function DemoNavigator() {
   const staff = pathname.startsWith("/mis") || pathname.startsWith("/admin");
 
   return (
-    <div className="fixed bottom-4 right-4 z-[55] sm:bottom-6 sm:right-6">
+    <div className="fixed bottom-4 right-4 z-[55] sm:bottom-6 sm:right-6 print:hidden">
       <AnimatePresence>
         {open && (
           <motion.div

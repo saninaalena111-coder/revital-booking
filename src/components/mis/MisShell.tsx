@@ -137,9 +137,9 @@ export function MisShell({ children }: { children: ReactNode }) {
     );
 
   return (
-    <div style={style} className="min-h-screen bg-cream/50 lg:grid lg:grid-cols-[264px_1fr]">
+    <div style={style} className="min-h-screen bg-cream/50 lg:grid lg:grid-cols-[264px_1fr] print:block print:bg-white">
       {/* боковая панель */}
-      <aside className="sticky top-0 hidden h-screen flex-col overflow-y-auto bg-forest-deep text-milk lg:flex">
+      <aside className="sticky top-0 hidden h-screen flex-col overflow-y-auto bg-forest-deep text-milk lg:flex print:hidden">
         <div className="px-6 pb-5 pt-6">
           <TenantLogo tenant={s.tenant} light subtitle="Для сотрудников" href={home} />
         </div>
@@ -154,7 +154,7 @@ export function MisShell({ children }: { children: ReactNode }) {
       </aside>
 
       <div className="min-w-0">
-        <header className="glass sticky top-0 z-40 border-b border-line">
+        <header className="glass sticky top-0 z-40 border-b border-line print:hidden">
           <div className="flex h-16 items-center justify-between gap-3 px-4 sm:px-8">
             <div className="flex min-w-0 items-center gap-3">
               <button

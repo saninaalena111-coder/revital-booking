@@ -61,7 +61,7 @@ export function Assistant() {
       <button
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
-        className="fixed bottom-4 left-4 z-[56] flex h-12 items-center gap-2 rounded-full bg-gold pl-3.5 pr-5 text-[14.5px] font-semibold text-forest-deep shadow-[var(--shadow-lift)] transition hover:bg-[#dcb878] sm:bottom-6 lg:left-[288px]"
+        className="fixed bottom-4 left-4 z-[56] flex h-12 print:hidden items-center gap-2 rounded-full bg-gold pl-3.5 pr-5 text-[14.5px] font-semibold text-forest-deep shadow-[var(--shadow-lift)] transition hover:bg-[#dcb878] sm:bottom-6 lg:left-[288px]"
       >
         <Sparkles size={18} /> Помощник
       </button>

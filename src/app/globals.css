@@ -98,3 +98,101 @@ body {
     scroll-behavior: auto;
   }
 }
+
+/* ===================== Печать ===================== */
+
+/* Слой печати документа: на экране скрыт, при печати — единственное, что видно */
+.print-portal {
+  display: none;
+}
+
+@media print {
+  @page {
+    size: A4;
+    margin: 14mm 14mm 16mm;
+  }
+  body {
+    background: #fff !important;
+  }
+  body.printing-portal > *:not(.print-portal) {
+    display: none !important;
+  }
+  body.printing-portal .print-portal {
+    display: block;
+  }
+  .glass,
+  .glass-dark {
+    backdrop-filter: none !important;
+    background: #fff !important;
+  }
+}
+
+.print-sheet {
+  font-family: var(--font-myriad), "Myriad Pro", ui-sans-serif, system-ui, sans-serif;
+  color: #1f2e2c;
+  font-size: 11pt;
+  line-height: 1.45;
+}
+.print-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 2px solid #2f5451;
+  padding-bottom: 8px;
+}
+.print-brand {
+  font-size: 16pt;
+  letter-spacing: 0.08em;
+  color: #2f5451;
+}
+.print-muted {
+  color: #6b7a76;
+  font-size: 9pt;
+}
+.print-title {
+  font-size: 17pt;
+  font-weight: 600;
+  margin: 14px 0 8px;
+  color: #1e3836;
+}
+.print-h2,
+.print-day h2 {
+  font-size: 11pt;
+  font-weight: 600;
+  margin: 12px 0 4px;
+  color: #2f5451;
+}
+.print-facts,
+.print-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6px 0;
+}
+.print-facts th,
+.print-facts td,
+.print-table th,
+.print-table td {
+  border: 1px solid #d6cfc0;
+  padding: 4px 6px;
+  text-align: left;
+  vertical-align: top;
+  font-size: 10pt;
+}
+.print-facts th,
+.print-table th {
+  background: #f4efe6;
+  font-weight: 600;
+}
+.print-table tr {
+  break-inside: avoid;
+}
+.print-foot {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 28px;
+  padding-top: 8px;
+  border-top: 1px solid #d6cfc0;
+  font-size: 9pt;
+  color: #6b7a76;
+}
