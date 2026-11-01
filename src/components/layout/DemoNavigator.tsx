@@ -21,7 +21,7 @@ const SCENARIOS: { title: string; time: string; steps: { label: string; href: st
     title: "Гость записался с сайта — запись у врача и в карте",
     time: "2 мин",
     steps: [
-      { label: "Гость записывается к Марии Ивановне Орловой", href: "/booking" },
+      { label: "Гость записывается — сайт видит его курс из МИС", href: "/booking" },
       { label: "Врач видит запись «С сайта» в своём дне", href: "/mis/today?as=doctor" },
       { label: "Запись в карте гостя", href: "/mis/patient?id=p-anna&as=doctor" },
     ],
